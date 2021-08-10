@@ -280,8 +280,8 @@ def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr
     tw_sc = tw_service_ceiling(C_Dmin, DP_ws, k, rho_sc)
     
     DP_pw = 0.001*(DP_tw*V)/eta_prop*1.341
-    DP_pwsl = DP_pw / ( 1.132*rho_sc/rho_TO - 0.132 )
-    Thr = tw_clvt*mtow
+    DP_pwsl = DP_pw / ( 1.132*rho/rho_TO - 0.132 )
+    Thr = DP_tw*mtow
     P_watt = (Thr*V)/eta_prop
     P_kw = 0.001*P_watt
     P_hp = P_kw*1.341
@@ -289,4 +289,6 @@ def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr
     sigma = rho/rho_TO
     P_hpSL = P_hp / ( 1.132*sigma - 0.132 ) # Gagg and Ferrar model for pistoned propellers, snorri equation (7-16)
     
-    return tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL
+    DP_S = mtow/DP_ws
+    
+    return tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S
