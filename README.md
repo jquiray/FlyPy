@@ -7,3 +7,8 @@ For now basic aircraft sizing is available
 - atmosphere model is based on freely available US Standard Atmosphere 1976
 
 Adding more features before compiling
+-----------------------------------------------
+How to use:
+1. Must have python installed
+2. Download all files into a single folder
+3. Run main.py
