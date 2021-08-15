@@ -241,3 +241,24 @@ def tw_service_ceiling(C_Dmin,ws,k,rho,V_v=0.508):
     
     tw = ( V_v/( ( (2/rho)*(ws)*( k/(3*C_Dmin) )**0.5 )**0.5 ) ) + 4*( (k*C_Dmin)/3 )**0.5
     return tw
+
+def clmax_ws_func(ws,rho_TO,V_stall):
+    """
+    
+
+    Parameters
+    ----------
+    ws : float
+        Wing loading.
+    rho : float
+        Air density at the desired altitude.
+    V_stall : float
+        Stalling velocity.
+
+    Returns
+    -------
+    C_Lmax for a given wing lading (ws).
+
+    """
+    C_Lmax_ws = ( 2/(rho_TO*V_stall**2) )*(ws)
+    return C_Lmax_ws

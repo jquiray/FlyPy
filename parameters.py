@@ -13,8 +13,9 @@ from func_b2_constraint_analysis import tw_desired_rate_of_climb
 from func_b2_constraint_analysis import tw_desired_TO_distance
 from func_b2_constraint_analysis import tw_desired_cruise_airspeed
 from func_b2_constraint_analysis import tw_service_ceiling
+from func_b2_constraint_analysis import clmax_ws_func
 # 
-def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,eta_prop):
+def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop):
     """
     Main parameters function
 
@@ -73,6 +74,7 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
     tw_dtod_list = []
     tw_dca_list = []
     tw_sc_list = []
+    clmax_list = []
     
     S_list = []
     for ind, val in enumerate(ws):
@@ -93,6 +95,9 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
         
         tw_sc = tw_service_ceiling(C_Dmin, ws[ind], k, rho_sc)
         tw_sc_list.append(tw_sc)
+        
+        clmax = clmax_ws_func(ws[ind], rho_TO, V_stall)
+        clmax_list.append(clmax)
         
         S = W/ws[ind]
         S_list.append(S)
@@ -193,8 +198,15 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
         psl_sc_mass_list.append(psl_sc_mass)
     #--------------------------------------------------
     
+    #--------------------------------------------------
+    clmaxW_list = []
+    for cl in clmax_list:
+        cl2 = cl/W
+        clmaxW_list.append(cl2)
+    #--------------------------------------------------
     
-    return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list
+    
+    return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list,clmaxW_list
 
 def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop):
     """
