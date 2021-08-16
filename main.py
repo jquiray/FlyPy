@@ -143,10 +143,7 @@ col1 = '#0040ff' # blue good
 col2 = '#00c030' # green
 #%% 03 Functions for Tkinter
 def button1fun():
-    global label111
-    global label222
-    global label333
-    global label444
+    global label111, label222, label333, label444
     
     if 'label111' in globals():
         label111.destroy()
@@ -154,54 +151,13 @@ def button1fun():
         label333.destroy()
         label444.destroy()
     
-    global ws
-    global tw_clvt_list
-    global tw_dsel_list
-    global tw_droc_list
-    global tw_dtod_list
-    global tw_dca_list
-    global tw_sc_list
-    global clmax_list
-    
-    global pw_clvt_list
-    global pw_dsel_list
-    global pw_droc_list
-    global pw_dtod_list
-    global pw_dca_list
-    global pw_sc_list
-    
-    global pwsl_clvt_list
-    global pwsl_dsel_list
-    global pwsl_droc_list
-    global pwsl_dtod_list
-    global pwsl_dca_list
-    global pwsl_sc_list
-    
-    global S_list
-    global t_clvt_mass_list
-    global t_dsel_mass_list
-    global t_dtod_mass_list
-    global t_dca_mass_list
-    global t_sc_mass_list
-    
-    global p_clvt_mass_list
-    global p_dsel_mass_list
-    global p_dtod_mass_list
-    global p_dca_mass_list
-    global p_sc_mass_list
-    
-    global psl_clvt_mass_list
-    global psl_dsel_mass_list
-    global psl_dtod_mass_list
-    global psl_dca_mass_list
-    global psl_sc_mass_list
-    
-    global DP_pw
-    global DP_pwsl
-    global Thr
-    global P_hp
-    global P_hpSL
-    global DP_S
+    global ws, tw_clvt_list, tw_dsel_list, tw_droc_list, tw_dtod_list, tw_dca_list, tw_sc_list, clmax_list
+    global pw_clvt_list, pw_dsel_list, pw_droc_list, pw_dtod_list, pw_dca_list, pw_sc_list
+    global pwsl_clvt_list, pwsl_dsel_list, pwsl_droc_list, pwsl_dtod_list, pwsl_dca_list, pwsl_sc_list
+    global S_list, t_clvt_mass_list, t_dsel_mass_list, t_dtod_mass_list, t_dca_mass_list, t_sc_mass_list
+    global p_clvt_mass_list, p_dsel_mass_list, p_dtod_mass_list, p_dca_mass_list, p_sc_mass_list
+    global psl_clvt_mass_list, psl_dsel_mass_list, psl_dtod_mass_list, psl_dca_mass_list, psl_sc_mass_list
+    global DP_pw, DP_pwsl, Thr, P_hp, P_hpSL, DP_S
     
     "INPUTS"
     ws_params = [200,2960,553] # [start, stop, numsteps] 200,1000,553
@@ -296,7 +252,7 @@ def button1fun():
 root = tk.Tk()
 root.title("root")
 rootWidth = 1600
-rootHeight = 720
+rootHeight = 900
 root.geometry(str(rootWidth) + 'x' + str(rootHeight))
 elw = 8 # Entry Label Width
 
@@ -305,15 +261,23 @@ frame1Height = rootHeight/1
 frame1 = tk.LabelFrame(root, text='Flight Parameters', width=frame1Width, height=frame1Height)
 frame1.pack(side=tk.LEFT)
 frame1.pack_propagate(0)
-# frame1.grid(row=1, column=1, padx=10, pady=5)
+
 
 frame2Width = rootWidth/2
 frame2Height = rootHeight/1
 frame2 = tk.LabelFrame(root,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
 frame2.pack()
-frame2.pack(side=tk.LEFT)
+frame2.pack(side=tk.TOP)
 frame2.pack_propagate(1)
-# frame2.grid(row=1, column=2, padx=10, pady=5)
+
+frame7Width = rootWidth/2
+frame7Height = rootHeight/1
+frame7 = tk.LabelFrame(root,text='frame7', relief=tk.RIDGE, borderwidth=5, width=frame7Width, height=frame7Height)
+frame7.pack()
+frame7.pack(side=tk.BOTTOM)
+frame7.pack_propagate(1)
+
+
 
 frame3 = tk.LabelFrame(frame1, text="frame3text")
 frame3.grid(row=0,column=0, sticky='nw')
@@ -705,34 +669,44 @@ button1.pack()
 # button1.grid(row=0,column=1)
 
 #%% PLOTTING MAGIC
-def keypress(heppening):
-    global keypress_label
-    if 'keypress_label' in globals():
-        keypress_label.pack_forget()
-    keypress_label = tk.Label(frame2, text='you pressed {}'.format(heppening.key))
-    keypress_label.pack( side=tk.RIGHT, anchor=tk.NE )
-    key_press_handler(heppening, plotcanvas, bar_of_tools)
+def keypress1(heppening1):
+    global keypress_label1
+    if 'keypress_label1' in globals():
+        keypress_label1.pack_forget()
+    keypress_label1 = tk.Label(frame2, text='you pressed1 {}'.format(heppening1.key))
+    keypress_label1.pack( side=tk.RIGHT, anchor=tk.NE )
+    key_press_handler(heppening1, plotcanvas1, bar_of_tools1)
+    # key_press_handler(event=heppening1, canvas=plotcanvas2, toolbar=bar_of_tools2)
+
+def keypress2(heppening2):
+    global keypress_label2
+    if 'keypress_label2' in globals():
+        keypress_label2.pack_forget()
+    keypress_label2 = tk.Label(frame7, text='you pressed2 {}'.format(heppening2.key))
+    keypress_label2.pack( side=tk.RIGHT, anchor=tk.NE )
+    key_press_handler(heppening2, plotcanvas2, bar_of_tools2)
+
 
 def showplotf():
     global frame2
+    global frame7
     global fig1
     if 'fig1' in globals():
         print('fig1 exists in GLOBALS')
         frame2.destroy()
         frame2 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
-        frame2.pack(side=tk.LEFT)
+        frame2.pack(side=tk.TOP)
         frame2.pack_propagate(1)
+        frame7.destroy()
+        frame7 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame7Width, height=frame7Height)
+        frame7.pack(side=tk.TOP)
+        frame7.pack_propagate(1)
         del fig1
     DP_ws = float(entry52.get())
     DP_tw = float(entry51.get())
-    # DP_pw = float(entry53.get())
-    # DP_pwsl = float(entry54.get())
-    # Thr = float(entry55.get())
     DP_pow = P_hp
     DP_powSL = P_hpSL
-    # DP_S = float(entry58.get())
-    
-    # global fig1
+    #---------------------------- Figure 1 ----------------------------#
     fig1 = Figure(figsize=(6,3.5),dpi=100) # see more args here
     if r1.get() == 1:
         maxtw = max( max(tw_clvt_list),max(tw_dsel_list),max(tw_dtod_list),max(tw_dca_list),max(tw_sc_list) )
@@ -796,16 +770,33 @@ def showplotf():
                                                                                                                               DP_S,DP_powSL,'ro')
     labbb = ['clvt','dsel','dtod','dca','sc','DP']
     fig1.legend(labbb,loc=[0.73,0.46])
-    global plotcanvas
-    global bar_of_tools
-    plotcanvas = FigureCanvasTkAgg(fig1, master=frame2)
-    plotcanvas.draw()
-    plotcanvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    global plotcanvas1
+    global bar_of_tools1, bar_of_tools2
     
-    bar_of_tools = NavigationToolbar2Tk(plotcanvas, frame2)
-    bar_of_tools.update()
+    plotcanvas1 = FigureCanvasTkAgg(fig1, master=frame2)
+    plotcanvas1.draw()
+    plotcanvas1.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
     
-    plotcanvas.mpl_connect('key_press_event', keypress)
+    bar_of_tools1 = NavigationToolbar2Tk(plotcanvas1, frame2)
+    bar_of_tools1.update()
+    
+    plotcanvas1.mpl_connect('key_press_event', keypress1)
+    plotcanvas1.mpl_disconnect(plotcanvas1)
+    #---------------------------- Figure 2 ----------------------------#
+    fig2 = Figure(figsize=(6,3.5),dpi=100)
+    if r1.get() == 1:
+        fig2.add_subplot(1,1,1).plot(ws,clmax_list,'r--')
+    global plotcanvas2
+    plotcanvas2 = FigureCanvasTkAgg(fig2, master=frame7)
+    plotcanvas2.draw()
+    plotcanvas2.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+    
+    bar_of_tools2 = NavigationToolbar2Tk(plotcanvas2, frame7)
+    bar_of_tools2.update()
+    
+    plotcanvas2.mpl_connect('key_press_event', keypress2)
+    plotcanvas2.mpl_disconnect(plotcanvas2)
+    
 
 def _quit():
     root.quit()
