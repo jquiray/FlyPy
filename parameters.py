@@ -197,16 +197,10 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
         psl_sc_mass = pwSL * W
         psl_sc_mass_list.append(psl_sc_mass)
     #--------------------------------------------------
-    
-    #--------------------------------------------------
-    clmaxW_list = []
-    for cl in clmax_list:
-        cl2 = cl/W
-        clmaxW_list.append(cl2)
     #--------------------------------------------------
     
     
-    return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list,clmaxW_list
+    return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list
 
 def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop):
     """
@@ -303,4 +297,6 @@ def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr
     
     DP_S = mtow/DP_ws
     
-    return tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S
+    clmax = clmax_ws_func(DP_ws, rho_TO, V_stall)
+    
+    return tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S,clmax

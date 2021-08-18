@@ -157,7 +157,7 @@ def button1fun():
     global S_list, t_clvt_mass_list, t_dsel_mass_list, t_dtod_mass_list, t_dca_mass_list, t_sc_mass_list
     global p_clvt_mass_list, p_dsel_mass_list, p_dtod_mass_list, p_dca_mass_list, p_sc_mass_list
     global psl_clvt_mass_list, psl_dsel_mass_list, psl_dtod_mass_list, psl_dca_mass_list, psl_sc_mass_list
-    global DP_pw, DP_pwsl, Thr, P_hp, P_hpSL, DP_S
+    global DP_pw, DP_pwsl, Thr, P_hp, P_hpSL, DP_S, clmax
     
     "INPUTS"
     ws_params = [200,2960,553] # [start, stop, numsteps] 200,1000,553
@@ -196,9 +196,9 @@ def button1fun():
     DP_ws = float(entry52.get())
     DP_tw = float(entry51.get())
     
-    T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list,clmaxW_list = mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop)
+    T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list = mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop)
     
-    tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S = designpoint(DP_ws, DP_tw, alt, V, mtow, ar, C_Dmin, n, P_S, V_v, C_DTO, C_LTO, S_G, mu_gr, V_LOF, V_vx, alt_sc, alt_TO, V_stall, eta_prop)
+    tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S,clmax = designpoint(DP_ws, DP_tw, alt, V, mtow, ar, C_Dmin, n, P_S, V_v, C_DTO, C_LTO, S_G, mu_gr, V_LOF, V_vx, alt_sc, alt_TO, V_stall, eta_prop)
     
     # entry53.delete(0,99)
     # entry54.delete(0,99)
@@ -212,18 +212,20 @@ def button1fun():
     # entry56.insert(tk.END, str(round(P_hp,1)))
     # entry57.insert(tk.END, str(round(P_hpSL,1)))
     # entry58.insert(tk.END, str(round(DP_S,2)))
-    label53 = tk.Label(frame5, text=str(round(DP_pw,4)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label53 = tk.Label(frame5, text=str(round(DP_pw,4)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label53.grid(row=53, column=1, sticky="w")
-    label54 = tk.Label(frame5, text=str(round(DP_pwsl,4)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label54 = tk.Label(frame5, text=str(round(DP_pwsl,4)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label54.grid(row=54, column=1, sticky="w")
-    label55 = tk.Label(frame5, text=str(round(Thr,1)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label55 = tk.Label(frame5, text=str(round(Thr,1)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label55.grid(row=55, column=1, sticky="w")
-    label56 = tk.Label(frame5, text=str(round(P_hp,1)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label56 = tk.Label(frame5, text=str(round(P_hp,1)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label56.grid(row=56, column=1, sticky="w")
-    label57 = tk.Label(frame5, text=str(round(P_hpSL,1)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label57 = tk.Label(frame5, text=str(round(P_hpSL,1)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label57.grid(row=57, column=1, sticky="w")
-    label58 = tk.Label(frame5, text=str(round(DP_S,2)), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label58 = tk.Label(frame5, text=str(round(DP_S,2)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label58.grid(row=58, column=1, sticky="w")
+    label59 = tk.Label(frame5, text=str(round(clmax,2)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label59.grid(row=59, column=1, sticky="w")
 
     
     # label111 = tk.Label(frame1, text= 'label111-entry1 is: ' + str( entry1.get() ))
@@ -235,15 +237,28 @@ def button1fun():
     # label444 = tk.Label(frame1, text= 'label444-entry4 is: ' + str(entry4.get()))
     # label444.pack()
     
-    label13 = tk.Label(frame4, text=str( round(q,ndigits=1) ), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
-    label13.grid(row=0, column=1, sticky="w")
-    label14 = tk.Label(frame4, text=str( round(T-273,ndigits=1) ), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
-    label14.grid(row=1, column=1, sticky="w")
-    label15 = tk.Label(frame4, text=str( round(e,ndigits=4) ), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    # Atmosphere    
+    label14rho = tk.Label(frame7, text=str( round(rho,ndigits=4) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label14rho.grid(row=0, column=1, sticky="w")
+    label14T = tk.Label(frame7, text=str( round(T-273.15,ndigits=1) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label14T.grid(row=1, column=1, sticky="w")
+    label14p = tk.Label(frame7, text=str( round(0.001*p,ndigits=3) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label14p.grid(row=2, column=1, sticky="w")
+    label14mu = tk.Label(frame7, text=str( round(1000000*mu,ndigits=2) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label14mu.grid(row=3, column=1, sticky="w")
+    label14a = tk.Label(frame7, text=str( round(a,ndigits=2) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label14a.grid(row=4, column=1, sticky="w")
+    
+    # Aerodynamics
+    label13q = tk.Label(frame9, text=str( round(q,ndigits=1) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label13q.grid(row=0, column=1, sticky="w")
+    label13Ma = tk.Label(frame9, text=str( round(V/a,ndigits=2) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label13Ma.grid(row=1, column=1, sticky="w")
+    label15 = tk.Label(frame9, text=str( round(e,ndigits=4) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label15.grid(row=2, column=1, sticky="w")
-    label16 = tk.Label(frame4, text=str( round(k,ndigits=4) ), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    label16 = tk.Label(frame9, text=str( round(k,ndigits=4) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label16.grid(row=3, column=1, sticky="w")
-    # label52 = tk.Label(frame4, text=str( r1.get() ), anchor="e", width=elw-2, borderwidth=1, relief="sunken")
+    # label52 = tk.Label(frame4, text=str( r1.get() ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     # label52.grid(row=5, column=1, sticky="w")
     
     showplotf()
@@ -251,8 +266,8 @@ def button1fun():
 
 root = tk.Tk()
 root.title("root")
-rootWidth = 1600
-rootHeight = 900
+rootWidth = 1400
+rootHeight = 800
 root.geometry(str(rootWidth) + 'x' + str(rootHeight))
 elw = 8 # Entry Label Width
 
@@ -270,25 +285,29 @@ frame2.pack()
 frame2.pack(side=tk.TOP)
 frame2.pack_propagate(1)
 
-frame7Width = rootWidth/2
-frame7Height = rootHeight/1
-frame7 = tk.LabelFrame(root,text='frame7', relief=tk.RIDGE, borderwidth=5, width=frame7Width, height=frame7Height)
-frame7.pack()
-frame7.pack(side=tk.BOTTOM)
-frame7.pack_propagate(1)
-
 
 
 frame3 = tk.LabelFrame(frame1, text="frame3text")
-frame3.grid(row=0,column=0, sticky='nw')
-# frame3.pack(side=tk.LEFT, anchor=tk.NW, padx=5, pady= 5, ipadx=0, ipady=0)
+frame3.grid(row=0,column=0, rowspan=2, sticky='nw')
+
+frame8 = tk.LabelFrame(frame1, text="frame8units")
+frame8.grid(row=0,column=1, sticky="nw")
+
 frame4 = tk.LabelFrame(frame1, text="frame4text")
-# frame4.pack(side=tk.RIGHT, anchor=tk.NE, padx=5, pady= 5, ipadx=0, ipady=0)
-frame4.grid(row=0,column=2,sticky="n")
+frame4.grid(row=0,column=2,sticky="nw")
+
 frame5 = tk.LabelFrame(frame1, text="Design Point")
-frame5.grid(row=1,column=0)
+frame5.grid(row=1,column=1, columnspan=2, sticky="sw")
+
+frame7 = tk.LabelFrame(frame1, text="frame7textAtmo")
+frame7.grid(row=2,column=0, sticky="nw")
+
+frame9 = tk.LabelFrame(frame1, text="frame9-Aero")
+frame9.grid(row=2,column=1, columnspan=2, sticky="nw")
+
+
 frame6 = tk.Frame(frame1,relief='flat')
-frame6.grid(row=1,column=2)
+frame6.grid(row=9,column=9)
 
 #---------------------------- INPUTS ----------------------------#
 ## ROW 0
@@ -517,7 +536,7 @@ labelDPWSinexpl.grid(row=52, column=3, sticky="w")
 ## ROW 53
 labelDPPW = tk.Label(frame5, text='P/W')
 labelDPPW.grid(row=53, column=0, sticky="w")
-label53 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label53 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label53.grid(row=53, column=1, sticky="w")
 # entry53 = tk.Entry(frame5, width=elw)
 # entry53.insert(tk.END, '0.000')
@@ -530,7 +549,7 @@ labelDPPWexpl.grid(row=53, column=3, sticky="w")
 ## ROW 54
 labelDPPW = tk.Label(frame5, text='P/W @SL')
 labelDPPW.grid(row=54, column=0, sticky="w")
-label54 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label54 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label54.grid(row=54, column=1, sticky="w")
 # entry54 = tk.Entry(frame5, width=elw)
 # entry54.insert(tk.END, '0.000')
@@ -543,7 +562,7 @@ labelDPPWexpl.grid(row=54, column=3, sticky="w")
 ## ROW 55
 labelDPThr = tk.Label(frame5, text='T')
 labelDPThr.grid(row=55, column=0, sticky="w")
-label55 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label55 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label55.grid(row=55, column=1, sticky="w")
 # entry55 = tk.Entry(frame5, width=elw)
 # entry55.insert(tk.END, '0')
@@ -556,7 +575,7 @@ labelDPThrexpl.grid(row=55, column=3, sticky="w")
 ## ROW 56
 labelDPPow = tk.Label(frame5, text='P')
 labelDPPow.grid(row=56, column=0, sticky="w")
-label56 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label56 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label56.grid(row=56, column=1, sticky="w")
 # entry56 = tk.Entry(frame5, width=elw)
 # entry56.insert(tk.END, '0')
@@ -569,7 +588,7 @@ labelDPPowexpl.grid(row=56, column=3, sticky="w")
 ## ROW 57
 labelDPPowsl = tk.Label(frame5, text='P @SL')
 labelDPPowsl.grid(row=57, column=0, sticky="w")
-label57 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label57 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label57.grid(row=57, column=1, sticky="w")
 # entry57 = tk.Entry(frame5, width=elw)
 # entry57.insert(tk.END, '0')
@@ -582,7 +601,7 @@ labelDPPowslexpl.grid(row=57, column=3, sticky="w")
 ## ROW 58
 labelDPS = tk.Label(frame5, text='S_ref')
 labelDPS.grid(row=58, column=0, sticky="w")
-label58 = tk.Label(frame5, text='', width=elw-2, borderwidth=1, relief="sunken")
+label58 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
 label58.grid(row=58, column=1, sticky="w")
 # entry58 = tk.Entry(frame5, width=elw)
 # entry58.insert(tk.END, '0.0')
@@ -593,72 +612,145 @@ labelDPSexpl = tk.Label(frame5, text='Wing surface (reference)')
 labelDPSexpl.grid(row=58, column=3, sticky="w")
 
 ## ROW 59
+labelDPclmax = tk.Label(frame5, text='C_Lmax')
+labelDPclmax.grid(row=59, column=0, sticky="w")
+label59 = tk.Label(frame5, text='', width=elw-1, borderwidth=1, relief="sunken")
+label59.grid(row=59, column=1, sticky="w")
+# entry58 = tk.Entry(frame5, width=elw)
+# entry58.insert(tk.END, '0.0')
+# entry58.grid(row=58, column=1)
+labelDPclmaxunit = tk.Label(frame5, text='[-]')
+labelDPclmaxunit.grid(row=59, column=2, sticky="w")
+labelDPclmaxexpl = tk.Label(frame5, text='Required C_Lmax')
+labelDPclmaxexpl.grid(row=59, column=3, sticky="w")
+
+## ROW 59
 # samplettxt = tk.Text(frame5, width=5, height=2, borderwidth=0)
 # samplettxt.tag_configure("subscript", offset=-4, font=('Calibri',6))
 # samplettxt.tag_configure("superscript", offset=6, font=('Calibri',6))
 # samplettxt.insert("insert", "H", "", "2", "subscript", "O", "", "2", "superscript")
 # samplettxt.grid(row=59,column=0)
 
-#---------------------------- OUTPUTS ----------------------------#
+#---------------------------- ATMOSPHERE ----------------------------#
+
 ## ROW 0
-label9 = tk.Label(frame4, text='Dynamic pressure, q')
-label9.grid(row=0, column=0, sticky="w")
-label13 = tk.Label(frame4, text='', width=elw-2, borderwidth=1, relief="sunken")
-label13.grid(row=0, column=1, sticky="w")
-label17 = tk.Label(frame4, text='[Pa s]', )
-label17.grid(row=0, column=2, sticky="w")
+label10rho = tk.Label(frame7, text='ρ')
+label10rho.grid(row=0, column=0, sticky="w")
+label14rho = tk.Label(frame7, text='', width=elw-1, borderwidth=1, relief="sunken")
+label14rho.grid(row=0, column=1, sticky="w")
+label18rho = tk.Label(frame7, text='[kg/m3]')
+label18rho.grid(row=0, column=2, sticky="w")
+label10rhoexpl = tk.Label(frame7, text='Density')
+label10rhoexpl.grid(row=0, column=3, sticky="w")
 
 ## ROW 1
-label10 = tk.Label(frame4, text='Temperature, T')
-label10.grid(row=1, column=0, sticky="w")
-label14 = tk.Label(frame4, text='', width=elw-2, borderwidth=1, relief="sunken")
-label14.grid(row=1, column=1, sticky="w")
-label18 = tk.Label(frame4, text='[°C]', )
-label18.grid(row=1, column=2, sticky="w")
+label10T = tk.Label(frame7, text='T')
+label10T.grid(row=1, column=0, sticky="w")
+label14T = tk.Label(frame7, text='', width=elw-1, borderwidth=1, relief="sunken")
+label14T.grid(row=1, column=1, sticky="w")
+label18T = tk.Label(frame7, text='[°C]')
+label18T.grid(row=1, column=2, sticky="w")
+label10Texpl = tk.Label(frame7, text='Temperature')
+label10Texpl.grid(row=1, column=3, sticky="w")
 
 ## ROW 2
-label11 = tk.Label(frame4, text="Oswald's efficiency, e")
-label11.grid(row=2, column=0, sticky="w")
-label15 = tk.Label(frame4, text='', width=elw-2, borderwidth=1, relief="sunken")
-label15.grid(row=2, column=1, sticky="w")
-label19 = tk.Label(frame4, text='[-]', )
-label19.grid(row=2, column=2, sticky="w")
+label10p = tk.Label(frame7, text='p')
+label10p.grid(row=2, column=0, sticky="w")
+label14p = tk.Label(frame7, text='', width=elw-1, borderwidth=1, relief="sunken")
+label14p.grid(row=2, column=1, sticky="w")
+label18p = tk.Label(frame7, text='[kPa]')
+label18p.grid(row=2, column=2, sticky="w")
+label10pexpl = tk.Label(frame7, text='Pressure')
+label10pexpl.grid(row=2, column=3, sticky="w")
 
 ## ROW 3
-label12 = tk.Label(frame4, text='Lift-induced drag constant, k')
+label10mu = tk.Label(frame7, text='μ')
+label10mu.grid(row=3, column=0, sticky="w")
+label14mu = tk.Label(frame7, text='', width=elw-1, borderwidth=1, relief="sunken")
+label14mu.grid(row=3, column=1, sticky="w")
+label18mu = tk.Label(frame7, text='[μPa s]')
+label18mu.grid(row=3, column=2, sticky="w")
+label10muexpl = tk.Label(frame7, text='Dynamic viscosity')
+label10muexpl.grid(row=3, column=3, sticky="w")
+
+## ROW 4
+label10a = tk.Label(frame7, text='a')
+label10a.grid(row=4, column=0, sticky="w")
+label14a = tk.Label(frame7, text='', width=elw-1, borderwidth=1, relief="sunken")
+label14a.grid(row=4, column=1, sticky="w")
+label18a = tk.Label(frame7, text='[m/s]')
+label18a.grid(row=4, column=2, sticky="w")
+label10aexpl = tk.Label(frame7, text='Speed of sound')
+label10aexpl.grid(row=4, column=3, sticky="w")
+
+#---------------------------- AERODYNAMICS ----------------------------#
+## ROW 0
+label9q = tk.Label(frame9, text='q')
+label9q.grid(row=0, column=0, sticky="w")
+label13q = tk.Label(frame9, text='', width=elw-1, borderwidth=1, relief="sunken")
+label13q.grid(row=0, column=1, sticky="w")
+label17q = tk.Label(frame9, text='[Pa]')
+label17q.grid(row=0, column=2, sticky="w")
+label9qexpl = tk.Label(frame9, text='Dynamic pressure')
+label9qexpl.grid(row=0, column=3, sticky="w")
+
+## ROW 0
+label9Ma = tk.Label(frame9, text='Ma')
+label9Ma.grid(row=1, column=0, sticky="w")
+label13Ma = tk.Label(frame9, text='', width=elw-1, borderwidth=1, relief="sunken")
+label13Ma.grid(row=1, column=1, sticky="w")
+label17Ma = tk.Label(frame9, text='[-]')
+label17Ma.grid(row=1, column=2, sticky="w")
+label9Maexpl = tk.Label(frame9, text='Mach number')
+label9Maexpl.grid(row=1, column=3, sticky="w")
+
+## ROW 2
+label11 = tk.Label(frame9, text="e")
+label11.grid(row=2, column=0, sticky="w")
+label15 = tk.Label(frame9, text='', width=elw-1, borderwidth=1, relief="sunken")
+label15.grid(row=2, column=1, sticky="w")
+label19 = tk.Label(frame9, text='[-]')
+label19.grid(row=2, column=2, sticky="w")
+label11expl = tk.Label(frame9, text="Oswald's efficiency")
+label11expl.grid(row=2, column=3, sticky="w")
+
+## ROW 3
+label12 = tk.Label(frame9, text='k')
 label12.grid(row=3, column=0, sticky="w")
-label16 = tk.Label(frame4, text='', width=elw-2, borderwidth=1, relief="sunken")
+label16 = tk.Label(frame9, text='', width=elw-1, borderwidth=1, relief="sunken")
 label16.grid(row=3, column=1, sticky="w")
-label20 = tk.Label(frame4, text='[-]', )
+label20 = tk.Label(frame9, text='[-]')
 label20.grid(row=3, column=2, sticky="w")
+label12expl = tk.Label(frame9, text='Lift-induced drag constant')
+label12expl.grid(row=3, column=3, sticky="w")
 
 ## ROW 5 radio buttons for plots
-plotsRadios = tk.Label(frame4, text='Sizing diagram type:').grid(row=5, column=0, sticky="w")
+plotsRadios = tk.Label(frame4, text='Sizing diagram type:').grid(row=5, column=0, columnspan=4, sticky="w")
 r1 = tk.IntVar()
 r1.set(1)
-tk.Radiobutton(frame4, text='Jet - tw plot',    variable=r1, value=1).grid(row=6, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Jet - twSL plot',  variable=r1, value=2, state=tk.DISABLED).grid(row=7, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Prop - pw plot',   variable=r1, value=3).grid(row=8, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Prop - pwSL plot', variable=r1, value=4).grid(row=9, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Jet - t plot',     variable=r1, value=5).grid(row=10, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Jet - tSL plot',   variable=r1, value=6, state=tk.DISABLED).grid(row=11, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Prop - p plot',    variable=r1, value=7).grid(row=12, column=0, sticky="w")
-tk.Radiobutton(frame4, text='Prop - pSL plot',  variable=r1, value=8).grid(row=13, column=0, sticky="w")
+tk.Radiobutton(frame4, text='T/W (Jet)',    variable=r1, value=1).grid(row=6, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='T/W@SL (Jet)',  variable=r1, value=2, state=tk.DISABLED).grid(row=7, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='P/W (Prop)',   variable=r1, value=3).grid(row=8, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='P/W@SL (Prop)', variable=r1, value=4).grid(row=9, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Thrust (Jet)',     variable=r1, value=5).grid(row=6, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Thrust@SL (Jet)',   variable=r1, value=6, state=tk.DISABLED).grid(row=7, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Power (Prop)',    variable=r1, value=7).grid(row=8, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Power@SL (Prop)',  variable=r1, value=8).grid(row=9, column=2, columnspan=2, sticky="w")
 
 ## ROW 14 radio buttons for units
-altUnitsRadios = tk.Label(frame4, text='Altitude units:').grid(row=14, column=0, sticky="w")
+altUnitsRadios = tk.Label(frame8, text='Altitude units:').grid(row=14, column=0, columnspan=4, sticky="w")
 r2 = tk.IntVar()
 r2.set(1)
-tk.Radiobutton(frame4, text='meters', variable=r2, value=1, command=lambda: altitudeunits(r2.get())).grid(row=15, column=0, sticky="w")
-tk.Radiobutton(frame4, text='feet',   variable=r2, value=2, command=lambda: altitudeunits(r2.get())).grid(row=16, column=0, sticky="w")
+tk.Radiobutton(frame8, text='meters', variable=r2, value=1, command=lambda: altitudeunits(r2.get())).grid(row=15, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame8, text='feet',   variable=r2, value=2, command=lambda: altitudeunits(r2.get())).grid(row=16, column=0, columnspan=2, sticky="w")
     
 
 ## ROW 17 radio buttons for velocities
-velUnitsRadios = tk.Label(frame4, text='x Velocity units:').grid(row=17, column=0, sticky="w")
+velUnitsRadios = tk.Label(frame8, text='x Velocity units:').grid(row=17, column=0, columnspan=4, sticky="w")
 r3 = tk.IntVar()
 r3.set(1)
-tk.Radiobutton(frame4, text='m/s', variable=r3, value=1, command=lambda: velocityunits(r3.get())).grid(row=18, column=0, sticky="w")
-tk.Radiobutton(frame4, text='kn',  variable=r3, value=2, command=lambda: velocityunits(r3.get())).grid(row=19, column=0, sticky="w")
+tk.Radiobutton(frame8, text='m/s', variable=r3, value=1, command=lambda: velocityunits(r3.get())).grid(row=18, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame8, text='kn',  variable=r3, value=2, command=lambda: velocityunits(r3.get())).grid(row=19, column=0, columnspan=2, sticky="w")
 
 
 'Label(self, text=text, justify=LEFT, anchor="w").grid(sticky = W, column=0,row=0)'
@@ -678,18 +770,9 @@ def keypress1(heppening1):
     key_press_handler(heppening1, plotcanvas1, bar_of_tools1)
     # key_press_handler(event=heppening1, canvas=plotcanvas2, toolbar=bar_of_tools2)
 
-def keypress2(heppening2):
-    global keypress_label2
-    if 'keypress_label2' in globals():
-        keypress_label2.pack_forget()
-    keypress_label2 = tk.Label(frame7, text='you pressed2 {}'.format(heppening2.key))
-    keypress_label2.pack( side=tk.RIGHT, anchor=tk.NE )
-    key_press_handler(heppening2, plotcanvas2, bar_of_tools2)
-
 
 def showplotf():
     global frame2
-    global frame7
     global fig1
     if 'fig1' in globals():
         print('fig1 exists in GLOBALS')
@@ -697,60 +780,56 @@ def showplotf():
         frame2 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
         frame2.pack(side=tk.TOP)
         frame2.pack_propagate(1)
-        frame7.destroy()
-        frame7 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame7Width, height=frame7Height)
-        frame7.pack(side=tk.TOP)
-        frame7.pack_propagate(1)
         del fig1
     DP_ws = float(entry52.get())
     DP_tw = float(entry51.get())
     DP_pow = P_hp
     DP_powSL = P_hpSL
     #---------------------------- Figure 1 ----------------------------#
-    fig1 = Figure(figsize=(6,3.5),dpi=100) # see more args here
+    fig1 = Figure(figsize=(6,7),dpi=100) # see more args here
     if r1.get() == 1:
         maxtw = max( max(tw_clvt_list),max(tw_dsel_list),max(tw_dtod_list),max(tw_dca_list),max(tw_sc_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxtw],xlabel='Wing loading W/S [N/m2]',ylabel='Thrust-to-Weight',title='Sizing Diagram').plot(ws,tw_clvt_list,'b-',
-                                                                                                                                                             ws,tw_dsel_list,'b--',
-                                                                                                                                                             ws,tw_dtod_list,'k--',
-                                                                                                                                                             ws,tw_dca_list,'k-',
-                                                                                                                                                             ws,tw_sc_list,'k:',
-                                                                                                                                                             [DP_ws,DP_ws],[0,1.2*DP_tw],'r--',
-                                                                                                                                                             [0,1.3*DP_ws],[DP_tw,DP_tw],'r--',
-                                                                                                                                                             DP_ws,DP_tw,'ro')
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxtw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Thrust-to-Weight [N/N]').plot(ws,tw_clvt_list,'b-',
+                                                                                                                                                 ws,tw_dsel_list,'b--',
+                                                                                                                                                 ws,tw_dtod_list,'k--',
+                                                                                                                                                 ws,tw_dca_list,'k-',
+                                                                                                                                                 ws,tw_sc_list,'k:',
+                                                                                                                                                 [DP_ws,DP_ws],[0,1.2*DP_tw],'r--',
+                                                                                                                                                 [0,1.3*DP_ws],[DP_tw,DP_tw],'r--',
+                                                                                                                                                 DP_ws,DP_tw,'ro')
     elif r1.get() == 3:
         maxpw = max( max(pw_clvt_list),max(pw_dsel_list),max(pw_dtod_list),max(pw_dca_list),max(pw_sc_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading W/S [N/m2]',ylabel='Power loading P/W [HP/N]',title='Sizing Diagram').plot(ws,pw_clvt_list,'b-',
-                                                                                                                                                                     ws,pw_dsel_list,'b--',
-                                                                                                                                                                     ws,pw_dtod_list,'k--',
-                                                                                                                                                                     ws,pw_dca_list,'k-',
-                                                                                                                                                                     ws,pw_sc_list,'k:',
-                                                                                                                                                                     [DP_ws,DP_ws],[0,1.2*DP_pw],'r--',
-                                                                                                                                                                     [0,1.3*DP_ws],[DP_pw,DP_pw],'r--',
-                                                                                                                                                                     DP_ws,DP_pw,'ro')
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading P/W [HP/N]').plot(ws,pw_clvt_list,'b-',
+                                                                                                                                              ws,pw_dsel_list,'b--',
+                                                                                                                                              ws,pw_dtod_list,'k--',
+                                                                                                                                              ws,pw_dca_list,'k-',
+                                                                                                                                              ws,pw_sc_list,'k:',
+                                                                                                                                              [DP_ws,DP_ws],[0,1.2*DP_pw],'r--',
+                                                                                                                                              [0,1.3*DP_ws],[DP_pw,DP_pw],'r--',
+                                                                                                                                              DP_ws,DP_pw,'ro')
     elif r1.get() == 4:
         maxpwsl = max( max(pwsl_clvt_list),max(pwsl_dsel_list),max(pwsl_dtod_list),max(pwsl_dca_list),max(pwsl_sc_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading W/S [N/m2]',ylabel='Power loading@SL P/W [HP/N]',title='Sizing Diagram').plot(ws,pwsl_clvt_list,'b-',
-                                                                                                                                                                          ws,pwsl_dsel_list,'b--',
-                                                                                                                                                                          ws,pwsl_dtod_list,'k--',
-                                                                                                                                                                          ws,pwsl_dca_list,'k-',
-                                                                                                                                                                          ws,pwsl_sc_list,'k:',
-                                                                                                                                                                          [DP_ws,DP_ws],[0,1.2*DP_pwsl],'r--',
-                                                                                                                                                                          [0,1.3*DP_ws],[DP_pwsl,DP_pwsl],'r--',
-                                                                                                                                                                          DP_ws,DP_pwsl,'ro')
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading@SL P/W [HP/N]').plot(ws,pwsl_clvt_list,'b-',
+                                                                                                                                                   ws,pwsl_dsel_list,'b--',
+                                                                                                                                                   ws,pwsl_dtod_list,'k--',
+                                                                                                                                                   ws,pwsl_dca_list,'k-',
+                                                                                                                                                   ws,pwsl_sc_list,'k:',
+                                                                                                                                                   [DP_ws,DP_ws],[0,1.2*DP_pwsl],'r--',
+                                                                                                                                                   [0,1.3*DP_ws],[DP_pwsl,DP_pwsl],'r--',
+                                                                                                                                                   DP_ws,DP_pwsl,'ro')
     elif r1.get() == 5:
         maxt = max( max(t_clvt_mass_list),max(t_dsel_mass_list),max(t_dtod_mass_list),max(t_dca_mass_list),max(t_sc_mass_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxt],xlabel='Sref [m2]',ylabel='Thrust').plot(S_list,t_clvt_mass_list,'b-',
-                                                                                                                     S_list,t_dsel_mass_list,'b--',
-                                                                                                                     S_list,t_dtod_mass_list,'k--',
-                                                                                                                     S_list,t_dca_mass_list,'k-',
-                                                                                                                     S_list,t_sc_mass_list,'k:',
-                                                                                                                     [DP_S,DP_S],[0,1.2*Thr],'r--',
-                                                                                                                     [0,1.3*DP_S],[Thr,Thr],'r--',
-                                                                                                                     DP_S,Thr,'ro')
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxt],xlabel='$S_{ref}$ $[m^2]$',ylabel='Thrust [N]').plot(S_list,t_clvt_mass_list,'b-',
+                                                                                                                                 S_list,t_dsel_mass_list,'b--',
+                                                                                                                                 S_list,t_dtod_mass_list,'k--',
+                                                                                                                                 S_list,t_dca_mass_list,'k-',
+                                                                                                                                 S_list,t_sc_mass_list,'k:',
+                                                                                                                                 [DP_S,DP_S],[0,1.2*Thr],'r--',
+                                                                                                                                 [0,1.3*DP_S],[Thr,Thr],'r--',
+                                                                                                                                 DP_S,Thr,'ro')
     elif r1.get() == 7:
         maxp = max( max(p_clvt_mass_list),max(p_dsel_mass_list),max(p_dtod_mass_list),max(p_dca_mass_list),max(p_sc_mass_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='Sref [m2]',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'b-',
                                                                                                                          S_list,p_dsel_mass_list,'b--',
                                                                                                                          S_list,p_dtod_mass_list,'k--',
                                                                                                                          S_list,p_dca_mass_list,'k-',
@@ -760,7 +839,7 @@ def showplotf():
                                                                                                                          DP_S,DP_pow,'ro')
     elif r1.get() == 8:
         maxpsl = max( max(psl_clvt_mass_list),max(psl_dsel_mass_list),max(psl_dtod_mass_list),max(psl_dca_mass_list),max(psl_sc_mass_list) )
-        fig1.add_subplot(1,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='Sref [m2]',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'b-',
                                                                                                                               S_list,psl_dsel_mass_list,'b--',
                                                                                                                               S_list,psl_dtod_mass_list,'k--',
                                                                                                                               S_list,psl_dca_mass_list,'k-',
@@ -768,8 +847,19 @@ def showplotf():
                                                                                                                               [DP_S,DP_S],[0,1.2*DP_powSL],'r--',
                                                                                                                               [0,1.3*DP_S],[DP_powSL,DP_powSL],'r--',
                                                                                                                               DP_S,DP_powSL,'ro')
+    if r1.get() == 1 or r1.get() == 2 or r1.get() == 3 or r1.get() == 4:
+        fig1.add_subplot(2,1,2,xlim=[min(ws),max(ws)],ylim=[0,max(clmax_list)],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='$C_{Lmax}$').plot(ws,clmax_list,'k-',
+                                                                                                                                     [DP_ws,DP_ws],[0,1.2*clmax],'r--',
+                                                                                                                                     [0,1.15*DP_ws],[clmax,clmax],'r--',
+                                                                                                                                     DP_ws,clmax,'ro')
+    if r1.get() == 5 or r1.get() == 6 or r1.get() == 7 or r1.get() == 8:
+        fig1.add_subplot(2,1,2,xlim=[min(S_list),max(S_list)],ylim=[0,max(clmax_list)],xlabel='$S_{ref}$ $[m^2]$',ylabel='$C_{Lmax}$').plot(S_list,clmax_list,'k-',
+                                                                                                                               [DP_S,DP_S],[0,1.2*clmax],'r--',
+                                                                                                                               [0,1.15*DP_S],[clmax,clmax],'r--',
+                                                                                                                               DP_S,clmax,'ro')
+    
     labbb = ['clvt','dsel','dtod','dca','sc','DP']
-    fig1.legend(labbb,loc=[0.73,0.46])
+    fig1.legend(labbb,loc=[0.73,0.80])
     global plotcanvas1
     global bar_of_tools1, bar_of_tools2
     
@@ -782,20 +872,6 @@ def showplotf():
     
     plotcanvas1.mpl_connect('key_press_event', keypress1)
     plotcanvas1.mpl_disconnect(plotcanvas1)
-    #---------------------------- Figure 2 ----------------------------#
-    fig2 = Figure(figsize=(6,3.5),dpi=100)
-    if r1.get() == 1:
-        fig2.add_subplot(1,1,1).plot(ws,clmax_list,'r--')
-    global plotcanvas2
-    plotcanvas2 = FigureCanvasTkAgg(fig2, master=frame7)
-    plotcanvas2.draw()
-    plotcanvas2.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-    
-    bar_of_tools2 = NavigationToolbar2Tk(plotcanvas2, frame7)
-    bar_of_tools2.update()
-    
-    plotcanvas2.mpl_connect('key_press_event', keypress2)
-    plotcanvas2.mpl_disconnect(plotcanvas2)
     
 
 def _quit():
