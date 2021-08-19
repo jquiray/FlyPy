@@ -160,7 +160,17 @@ def button1fun():
     global DP_pw, DP_pwsl, Thr, P_hp, P_hpSL, DP_S, clmax
     
     "INPUTS"
-    ws_params = [200,2960,553] # [start, stop, numsteps] 200,1000,553
+    ws_lo = round(float(ws_range_from.get()))
+    ws_hi = round(float(ws_range_to.get()))
+    if ws_lo <= 0:
+        ws_range_from.delete(0,99)
+        ws_range_from.insert(tk.END , '1')
+        ws_lo = int(ws_range_from.get())
+    if ws_hi <= ws_lo:
+        ws_range_to.delete(0,99)
+        ws_range_to.insert(tk.END , str(ws_lo+1))
+        ws_hi = int(ws_range_to.get())
+    ws_params = [ws_lo,ws_hi,100] # [start, stop, numsteps] 200,1000,553 | 70,139,277,553
     alt = float(entry1.get())
     if r2.get() == 2:
         alt = alt*0.3048
@@ -293,7 +303,7 @@ frame3.grid(row=0,column=0, rowspan=2, sticky='nw')
 frame8 = tk.LabelFrame(frame1, text="frame8units")
 frame8.grid(row=0,column=1, sticky="nw")
 
-frame4 = tk.LabelFrame(frame1, text="frame4text")
+frame4 = tk.LabelFrame(frame1, text="frame4-siz_diag_type")
 frame4.grid(row=0,column=2,sticky="nw")
 
 frame5 = tk.LabelFrame(frame1, text="Design Point")
@@ -725,17 +735,24 @@ label12expl = tk.Label(frame9, text='Lift-induced drag constant')
 label12expl.grid(row=3, column=3, sticky="w")
 
 ## ROW 5 radio buttons for plots
-plotsRadios = tk.Label(frame4, text='Sizing diagram type:').grid(row=5, column=0, columnspan=4, sticky="w")
+ws_range1 = tk.Label(frame4, text='W/S range:').grid(row=5, column=0, sticky="w")
+ws_range_from = tk.Entry(frame4, width=elw-3)
+ws_range_from.insert(tk.END , '200')
+ws_range_from.grid(row=5, column=1, sticky="e")
+ws_range3 = tk.Label(frame4, text=' - ').grid(row=5, column=2)
+ws_range_to = tk.Entry(frame4, width=elw-3)
+ws_range_to.insert(tk.END , '2960')
+ws_range_to.grid(row=5, column=3, sticky="w")
 r1 = tk.IntVar()
 r1.set(1)
-tk.Radiobutton(frame4, text='T/W (Jet)',    variable=r1, value=1).grid(row=6, column=0, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='T/W@SL (Jet)',  variable=r1, value=2, state=tk.DISABLED).grid(row=7, column=0, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='P/W (Prop)',   variable=r1, value=3).grid(row=8, column=0, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='P/W@SL (Prop)', variable=r1, value=4).grid(row=9, column=0, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='Thrust (Jet)',     variable=r1, value=5).grid(row=6, column=2, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='Thrust@SL (Jet)',   variable=r1, value=6, state=tk.DISABLED).grid(row=7, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='T/W (Jet)',       variable=r1, value=1).grid(row=6, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='T/W@SL (Jet)',    variable=r1, value=2, state=tk.DISABLED).grid(row=7, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='P/W (Prop)',      variable=r1, value=3).grid(row=8, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='P/W@SL (Prop)',   variable=r1, value=4).grid(row=9, column=0, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Thrust (Jet)',    variable=r1, value=5).grid(row=6, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Thrust@SL (Jet)', variable=r1, value=6, state=tk.DISABLED).grid(row=7, column=2, columnspan=2, sticky="w")
 tk.Radiobutton(frame4, text='Power (Prop)',    variable=r1, value=7).grid(row=8, column=2, columnspan=2, sticky="w")
-tk.Radiobutton(frame4, text='Power@SL (Prop)',  variable=r1, value=8).grid(row=9, column=2, columnspan=2, sticky="w")
+tk.Radiobutton(frame4, text='Power@SL (Prop)', variable=r1, value=8).grid(row=9, column=2, columnspan=2, sticky="w")
 
 ## ROW 14 radio buttons for units
 altUnitsRadios = tk.Label(frame8, text='Altitude units:').grid(row=14, column=0, columnspan=4, sticky="w")
@@ -799,7 +816,7 @@ def showplotf():
                                                                                                                                                  DP_ws,DP_tw,'ro')
     elif r1.get() == 3:
         maxpw = max( max(pw_clvt_list),max(pw_dsel_list),max(pw_dtod_list),max(pw_dca_list),max(pw_sc_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading P/W [HP/N]').plot(ws,pw_clvt_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading P/W [HP/N]').plot(ws,pw_clvt_list,'bx',
                                                                                                                                               ws,pw_dsel_list,'b--',
                                                                                                                                               ws,pw_dtod_list,'k--',
                                                                                                                                               ws,pw_dca_list,'k-',
@@ -809,7 +826,7 @@ def showplotf():
                                                                                                                                               DP_ws,DP_pw,'ro')
     elif r1.get() == 4:
         maxpwsl = max( max(pwsl_clvt_list),max(pwsl_dsel_list),max(pwsl_dtod_list),max(pwsl_dca_list),max(pwsl_sc_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading@SL P/W [HP/N]').plot(ws,pwsl_clvt_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading@SL P/W [HP/N]').plot(ws,pwsl_clvt_list,'bx',
                                                                                                                                                    ws,pwsl_dsel_list,'b--',
                                                                                                                                                    ws,pwsl_dtod_list,'k--',
                                                                                                                                                    ws,pwsl_dca_list,'k-',
@@ -829,7 +846,7 @@ def showplotf():
                                                                                                                                  DP_S,Thr,'ro')
     elif r1.get() == 7:
         maxp = max( max(p_clvt_mass_list),max(p_dsel_mass_list),max(p_dtod_mass_list),max(p_dca_mass_list),max(p_sc_mass_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'bx',
                                                                                                                          S_list,p_dsel_mass_list,'b--',
                                                                                                                          S_list,p_dtod_mass_list,'k--',
                                                                                                                          S_list,p_dca_mass_list,'k-',
@@ -839,7 +856,7 @@ def showplotf():
                                                                                                                          DP_S,DP_pow,'ro')
     elif r1.get() == 8:
         maxpsl = max( max(psl_clvt_mass_list),max(psl_dsel_mass_list),max(psl_dtod_mass_list),max(psl_dca_mass_list),max(psl_sc_mass_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'b-',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'bx',
                                                                                                                               S_list,psl_dsel_mass_list,'b--',
                                                                                                                               S_list,psl_dtod_mass_list,'k--',
                                                                                                                               S_list,psl_dca_mass_list,'k-',
@@ -877,7 +894,6 @@ def showplotf():
 def _quit():
     root.quit()
     root.destroy()
-
 
 button3 = tk.Button(frame6,width=4, text='EXIT', font=('Helvetica',28), command=_quit)
 # button3.grid(row=1,column=1)
