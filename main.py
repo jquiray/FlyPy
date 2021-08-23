@@ -9,9 +9,10 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # Implement the canvas thing, so Frame[Canvas[Subplot[Plot] ] ]
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk # Implement the Matplotlib toolbar
 from matplotlib.backend_bases import key_press_handler # Implement the default Matplotlib key bindings
-from matplotlib.figure import Figure
+from matplotlib.figure import Figure # Implement Matplotlib figure
 from parameters import mainparameters
 from parameters import designpoint
+import menu_functions
 
 #%% 02 Units Functions
 
@@ -142,9 +143,14 @@ def velocityunits(value):
 col1 = '#0040ff' # blue good
 col2 = '#00c030' # green
 #%% 03 Functions for Tkinter
+
+def _quit():
+    root.quit()
+    root.destroy()
+
 def button1fun():
     global label111, label222, label333, label444
-    
+    global savelist
     if 'label111' in globals():
         label111.destroy()
         label222.destroy()
@@ -170,14 +176,15 @@ def button1fun():
         ws_range_to.delete(0,99)
         ws_range_to.insert(tk.END , str(ws_lo+1))
         ws_hi = int(ws_range_to.get())
-    ws_params = [ws_lo,ws_hi,100] # [start, stop, numsteps] 200,1000,553 | 70,139,277,553
+    ws_params = [ws_lo,ws_hi,100] # [start, stop, numsteps] for np.linspace in function
     alt = float(entry1.get())
     if r2.get() == 2:
         alt = alt*0.3048
     V = float(entry2.get())
     if r3.get() == 2:
         V = V*0.5144
-    mtow = float(entry3.get())*9.81
+    mtom = float(entry3.get())
+    mtow = mtom*9.81
     ar = float(entry4.get())
     C_Dmin = float(entry5.get())
     n = float(entry6.get())
@@ -205,6 +212,36 @@ def button1fun():
     eta_prop = float(entry18.get())
     DP_ws = float(entry52.get())
     DP_tw = float(entry51.get())
+    
+    savelist = [
+        "savefile for FlyPy",
+        alt,
+        V,
+        mtom,
+        ar,
+        C_Dmin,
+        n,
+        P_S,
+        V_v,
+        C_DTO,
+        C_LTO,
+        S_G,
+        mu_gr,
+        V_LOF,
+        V_vx,
+        alt_sc,
+        alt_TO,
+        V_stall,
+        eta_prop,
+        DP_ws,
+        DP_tw,
+        ws_lo,
+        ws_hi,
+        r1.get(),
+        r2.get(),
+        r3.get()
+        ]
+    # savelist = "fuhfuhfuhfail"
     
     T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list = mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop)
     
@@ -280,6 +317,103 @@ rootWidth = 1400
 rootHeight = 800
 root.geometry(str(rootWidth) + 'x' + str(rootHeight))
 elw = 8 # Entry Label Width
+
+def donothing():
+    return
+
+def saveload(whattodo):
+    if whattodo == 'new':
+        entry1.delete(0,99),    entry2.delete(0,99),    entry3.delete(0,99)
+        entry4.delete(0,99),    entry5.delete(0,99),    entry6.delete(0,99)
+        entry7.delete(0,99),    entry8.delete(0,99),    entry9.delete(0,99)
+        entry10.delete(0,99),   entry11.delete(0,99),   entry12.delete(0,99)
+        entry13.delete(0,99),   entry14.delete(0,99),   entry15.delete(0,99)
+        entry16.delete(0,99),   entry17.delete(0,99),   entry18.delete(0,99)
+        entry52.delete(0,99),   entry51.delete(0,99)
+        ws_range_from.delete(0,99)
+        ws_range_to.delete(0,99)
+        frame2.destroy()
+        print('Aircraft erased')
+    
+    elif whattodo == 'saveas':
+        global filename1
+        filename1 = menu_functions.option_saveas(savelist)
+        return filename1
+    elif whattodo == 'save':
+        try:
+            menu_functions.option_save(savelist,filename1)
+        except NameError:
+            saveload('saveas')
+    elif whattodo == 'load':
+        load_list,filename1 = menu_functions.option_load()
+        entry1.delete(0,99)
+        entry1.insert(tk.END, load_list[1])
+        entry2.delete(0,99)
+        entry2.insert(tk.END, load_list[2])
+        entry3.delete(0,99)
+        entry3.insert(tk.END, load_list[3])
+        entry4.delete(0,99)
+        entry4.insert(tk.END, load_list[4])
+        entry5.delete(0,99)
+        entry5.insert(tk.END, load_list[5])
+        entry6.delete(0,99)
+        entry6.insert(tk.END, load_list[6])
+        entry7.delete(0,99)
+        entry7.insert(tk.END, load_list[7])
+        entry8.delete(0,99)
+        entry8.insert(tk.END, load_list[8])
+        entry9.delete(0,99)
+        entry9.insert(tk.END, load_list[9])
+        entry10.delete(0,99)
+        entry10.insert(tk.END, load_list[10])
+        entry11.delete(0,99)
+        entry11.insert(tk.END, load_list[11])
+        entry12.delete(0,99)
+        entry12.insert(tk.END, load_list[12])
+        entry13.delete(0,99)
+        entry13.insert(tk.END, load_list[13])
+        entry14.delete(0,99)
+        entry14.insert(tk.END, load_list[14])
+        entry15.delete(0,99)
+        entry15.insert(tk.END, load_list[15])
+        entry16.delete(0,99)
+        entry16.insert(tk.END, load_list[16])
+        entry17.delete(0,99)
+        entry17.insert(tk.END, load_list[17])
+        entry18.delete(0,99)
+        entry18.insert(tk.END, load_list[18])
+        entry52.delete(0,99)
+        entry52.insert(tk.END, load_list[19])
+        entry51.delete(0,99)
+        entry51.insert(tk.END, load_list[20])
+        ws_range_from.delete(0,99)
+        ws_range_from.insert(tk.END, load_list[21])
+        ws_range_to.delete(0,99)
+        ws_range_to.insert(tk.END, load_list[22])
+        r1.set(int(load_list[23]))
+        r2.set(int(load_list[24]))
+        r3.set(int(load_list[25]))
+        altitudeunits(r2.get())
+        velocityunits(r3.get())
+        print('Aircraft loaded')
+
+xx = 'transferred'
+# C = "no"
+menubar1 = tk.Menu(root)
+file_menu = tk.Menu(menubar1, tearoff=0)
+menubar1.add_cascade(label='File', menu=file_menu)
+file_menu.add_command(label='New', command=lambda: saveload('new'))
+file_menu.add_command(label='Save', command=lambda: saveload('save'))
+file_menu.add_command(label='Save As...', command=lambda: saveload('saveas'))
+file_menu.add_command(label='Load', command=lambda: saveload('load'))
+file_menu.add_separator()
+file_menu.add_command(label='Exit', command=_quit)
+
+help_menu = tk.Menu(menubar1, tearoff=0)
+menubar1.add_cascade(label='Help', menu=help_menu)
+help_menu.add_command(label='opt5', command=donothing)
+help_menu.add_command(label='opt6', command=donothing)
+root.config(menu=menubar1)
 
 frame1Width = rootWidth/2
 frame1Height = rootHeight/1
@@ -792,8 +926,8 @@ def showplotf():
     global frame2
     global fig1
     if 'fig1' in globals():
-        print('fig1 exists in GLOBALS')
-        frame2.destroy()
+    #     print('fig1 exists in GLOBALS')
+        frame2.destroy() # does not destroy wtf
         frame2 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
         frame2.pack(side=tk.TOP)
         frame2.pack_propagate(1)
@@ -816,7 +950,7 @@ def showplotf():
                                                                                                                                                  DP_ws,DP_tw,'ro')
     elif r1.get() == 3:
         maxpw = max( max(pw_clvt_list),max(pw_dsel_list),max(pw_dtod_list),max(pw_dca_list),max(pw_sc_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading P/W [HP/N]').plot(ws,pw_clvt_list,'bx',
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpw],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading P/W [HP/N]').plot(ws,pw_clvt_list,'b-',
                                                                                                                                               ws,pw_dsel_list,'b--',
                                                                                                                                               ws,pw_dtod_list,'k--',
                                                                                                                                               ws,pw_dca_list,'k-',
@@ -826,7 +960,7 @@ def showplotf():
                                                                                                                                               DP_ws,DP_pw,'ro')
     elif r1.get() == 4:
         maxpwsl = max( max(pwsl_clvt_list),max(pwsl_dsel_list),max(pwsl_dtod_list),max(pwsl_dca_list),max(pwsl_sc_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading@SL P/W [HP/N]').plot(ws,pwsl_clvt_list,'bx',
+        fig1.add_subplot(2,1,1,xlim=[min(ws),max(ws)],ylim=[0,maxpwsl],xlabel='Wing loading $W/S$ $[N/m^2]$',ylabel='Power loading@SL P/W [HP/N]').plot(ws,pwsl_clvt_list,'b-',
                                                                                                                                                    ws,pwsl_dsel_list,'b--',
                                                                                                                                                    ws,pwsl_dtod_list,'k--',
                                                                                                                                                    ws,pwsl_dca_list,'k-',
@@ -846,7 +980,7 @@ def showplotf():
                                                                                                                                  DP_S,Thr,'ro')
     elif r1.get() == 7:
         maxp = max( max(p_clvt_mass_list),max(p_dsel_mass_list),max(p_dtod_mass_list),max(p_dca_mass_list),max(p_sc_mass_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'bx',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxp],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power [HP]').plot(S_list,p_clvt_mass_list,'b-',
                                                                                                                          S_list,p_dsel_mass_list,'b--',
                                                                                                                          S_list,p_dtod_mass_list,'k--',
                                                                                                                          S_list,p_dca_mass_list,'k-',
@@ -856,7 +990,7 @@ def showplotf():
                                                                                                                          DP_S,DP_pow,'ro')
     elif r1.get() == 8:
         maxpsl = max( max(psl_clvt_mass_list),max(psl_dsel_mass_list),max(psl_dtod_mass_list),max(psl_dca_mass_list),max(psl_sc_mass_list) )
-        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'bx',
+        fig1.add_subplot(2,1,1,xlim=[min(S_list),max(S_list)],ylim=[0,maxpsl],xlabel='$S_{ref}$ $[m^2]$',ylabel='Power@SL [HP]').plot(S_list,psl_clvt_mass_list,'b-',
                                                                                                                               S_list,psl_dsel_mass_list,'b--',
                                                                                                                               S_list,psl_dtod_mass_list,'k--',
                                                                                                                               S_list,psl_dca_mass_list,'k-',
@@ -890,10 +1024,6 @@ def showplotf():
     plotcanvas1.mpl_connect('key_press_event', keypress1)
     plotcanvas1.mpl_disconnect(plotcanvas1)
     
-
-def _quit():
-    root.quit()
-    root.destroy()
 
 button3 = tk.Button(frame6,width=4, text='EXIT', font=('Helvetica',28), command=_quit)
 # button3.grid(row=1,column=1)
