@@ -6,6 +6,7 @@ Created on Wed Jul 28 15:39:01 2021
 """
 #%% 01 IMPORTS
 import tkinter as tk
+from tkinter import ttk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # Implement the canvas thing, so Frame[Canvas[Subplot[Plot] ] ]
 from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk # Implement the Matplotlib toolbar
 from matplotlib.backend_bases import key_press_handler # Implement the default Matplotlib key bindings
@@ -143,6 +144,9 @@ def velocityunits(value):
 col1 = '#0040ff' # blue good
 col2 = '#00c030' # green
 #%% 03 Functions for Tkinter
+
+def press_enterf(press_enter1):
+    button1fun()
 
 def _quit():
     root.quit()
@@ -309,17 +313,6 @@ def button1fun():
     # label52.grid(row=5, column=1, sticky="w")
     
     showplotf()
-#%% 04 GUI
-
-root = tk.Tk()
-root.title("root")
-rootWidth = 1400
-rootHeight = 800
-root.geometry(str(rootWidth) + 'x' + str(rootHeight))
-elw = 8 # Entry Label Width
-
-def donothing():
-    return
 
 def saveload(whattodo):
     if whattodo == 'new':
@@ -396,9 +389,16 @@ def saveload(whattodo):
         altitudeunits(r2.get())
         velocityunits(r3.get())
         print('Aircraft loaded')
+#%% 04 GUI
+#------------------ Define root ------------------#
+root = tk.Tk()
+root.title("root")
+rootWidth = 1400
+rootHeight = 800
+root.geometry(str(rootWidth) + 'x' + str(rootHeight))
+elw = 8 # Entry Label Width
 
-xx = 'transferred'
-# C = "no"
+#------------------ Menu bar ------------------#
 menubar1 = tk.Menu(root)
 file_menu = tk.Menu(menubar1, tearoff=0)
 menubar1.add_cascade(label='File', menu=file_menu)
@@ -410,45 +410,52 @@ file_menu.add_separator()
 file_menu.add_command(label='Exit', command=_quit)
 
 help_menu = tk.Menu(menubar1, tearoff=0)
-menubar1.add_cascade(label='Help', menu=help_menu)
-help_menu.add_command(label='opt5', command=donothing)
-help_menu.add_command(label='opt6', command=donothing)
+menubar1.add_cascade(label='About', menu=help_menu)
+help_menu.add_command(label='About...', command=menu_functions.option_about)
 root.config(menu=menubar1)
 
+#------------------ Tabs ------------------#
+notebook1 = ttk.Notebook(root)
+tab1 = ttk.Frame(notebook1)
+tab2 = ttk.Frame(notebook1)
+notebook1.add(tab1, text='Tab1-Sizing')
+notebook1.add(tab2, text='Tab2-empty')
+notebook1.pack()
+
+
+#------------------ Frames ------------------#
 frame1Width = rootWidth/2
 frame1Height = rootHeight/1
-frame1 = tk.LabelFrame(root, text='Flight Parameters', width=frame1Width, height=frame1Height)
+frame1 = tk.LabelFrame(tab1, text='Flight Parameters', width=frame1Width, height=frame1Height)
 frame1.pack(side=tk.LEFT)
 frame1.pack_propagate(0)
 
 
 frame2Width = rootWidth/2
 frame2Height = rootHeight/1
-frame2 = tk.LabelFrame(root,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
+frame2 = tk.LabelFrame(tab1,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
 frame2.pack()
-frame2.pack(side=tk.TOP)
-frame2.pack_propagate(1)
+frame2.pack(side=tk.LEFT)
+frame2.pack_propagate(0)
+frame2_copy = frame2
 
-
-
-frame3 = tk.LabelFrame(frame1, text="frame3text")
+frame3 = tk.LabelFrame(frame1, text="frame3-inputs")
 frame3.grid(row=0,column=0, rowspan=2, sticky='nw')
 
-frame8 = tk.LabelFrame(frame1, text="frame8units")
+frame8 = tk.LabelFrame(frame1, text="frame8-units")
 frame8.grid(row=0,column=1, sticky="nw")
 
 frame4 = tk.LabelFrame(frame1, text="frame4-siz_diag_type")
 frame4.grid(row=0,column=2,sticky="nw")
 
-frame5 = tk.LabelFrame(frame1, text="Design Point")
+frame5 = tk.LabelFrame(frame1, text="frame5-DesignPoint")
 frame5.grid(row=1,column=1, columnspan=2, sticky="sw")
 
-frame7 = tk.LabelFrame(frame1, text="frame7textAtmo")
+frame7 = tk.LabelFrame(frame1, text="frame7-Atmo")
 frame7.grid(row=2,column=0, sticky="nw")
 
 frame9 = tk.LabelFrame(frame1, text="frame9-Aero")
 frame9.grid(row=2,column=1, columnspan=2, sticky="nw")
-
 
 frame6 = tk.Frame(frame1,relief='flat')
 frame6.grid(row=9,column=9)
@@ -907,9 +914,8 @@ tk.Radiobutton(frame8, text='kn',  variable=r3, value=2, command=lambda: velocit
 'Label(self, text=text, justify=LEFT, anchor="w").grid(sticky = W, column=0,row=0)'
 
 # Calculate Button
-button1 = tk.Button(frame6, text='calculate\nand plot',font=('Helvetica',14), command=button1fun)
+button1 = tk.Button(frame6, text='Update all\n[ Enter ]',font=('Helvetica',14), command=button1fun)
 button1.pack()
-# button1.grid(row=0,column=1)
 
 #%% PLOTTING MAGIC
 def keypress1(heppening1):
@@ -928,9 +934,9 @@ def showplotf():
     if 'fig1' in globals():
     #     print('fig1 exists in GLOBALS')
         frame2.destroy() # does not destroy wtf
-        frame2 = tk.Frame(root, relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
-        frame2.pack(side=tk.TOP)
-        frame2.pack_propagate(1)
+        frame2 = tk.LabelFrame(tab1,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
+        frame2.pack(side=tk.LEFT)
+        frame2.pack_propagate(0)
         del fig1
     DP_ws = float(entry52.get())
     DP_tw = float(entry51.get())
@@ -1028,6 +1034,8 @@ def showplotf():
 button3 = tk.Button(frame6,width=4, text='EXIT', font=('Helvetica',28), command=_quit)
 # button3.grid(row=1,column=1)
 button3.pack()
+
+root.bind('<Return>',press_enterf)
 
 # label200 = tk.Label(frame2, text='label200')
 # label200.pack( side=tk.LEFT, anchor=tk.NW )

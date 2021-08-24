@@ -49,6 +49,8 @@ def option_saveas(savelist):
 #-----------------------------------#
 
 def option_about():
+    text1 = "Hi, thanks for using this aircraft sizing tool (I haven't come up with a name yet). It's a hobby project and still heavily in development.\n\nIf you have constructive comments and/or advices, please leave a comment on my github page.\n\nMat"
+    tk.messagebox.showinfo(title="About", message=text1)
     return
 
 
