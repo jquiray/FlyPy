@@ -14,6 +14,7 @@ from matplotlib.figure import Figure # Implement Matplotlib figure
 from parameters import mainparameters
 from parameters import designpoint
 import menu_functions
+import func_b1_cost_analysis
 
 #%% 02 Units Functions
 
@@ -170,6 +171,8 @@ def button1fun():
     global DP_pw, DP_pwsl, Thr, P_hp, P_hpSL, DP_S, clmax
     
     "INPUTS"
+    F_EXP = float(entry4412.get())
+    N_units = int(entry4415.get())
     ws_lo = round(float(ws_range_from.get()))
     ws_hi = round(float(ws_range_to.get()))
     if ws_lo <= 0:
@@ -243,26 +246,17 @@ def button1fun():
         ws_hi,
         r1.get(),
         r2.get(),
-        r3.get()
+        r3.get(),
+        F_EXP,
+        N_units
         ]
-    # savelist = "fuhfuhfuhfail"
+    
+    QDF = func_b1_cost_analysis.quantity_discount_factor(F_EXP,N_units)
     
     T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list = mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop)
     
     tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S,clmax = designpoint(DP_ws, DP_tw, alt, V, mtow, ar, C_Dmin, n, P_S, V_v, C_DTO, C_LTO, S_G, mu_gr, V_LOF, V_vx, alt_sc, alt_TO, V_stall, eta_prop)
     
-    # entry53.delete(0,99)
-    # entry54.delete(0,99)
-    # entry55.delete(0,99)
-    # entry56.delete(0,99)
-    # entry57.delete(0,99)
-    # entry58.delete(0,99)
-    # entry53.insert(tk.END, str(round(DP_pw,4)))
-    # entry54.insert(tk.END, str(round(DP_pwsl,4)))
-    # entry55.insert(tk.END, str(round(Thr,1)))
-    # entry56.insert(tk.END, str(round(P_hp,1)))
-    # entry57.insert(tk.END, str(round(P_hpSL,1)))
-    # entry58.insert(tk.END, str(round(DP_S,2)))
     label53 = tk.Label(frame5, text=str(round(DP_pw,4)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label53.grid(row=53, column=1, sticky="w")
     label54 = tk.Label(frame5, text=str(round(DP_pwsl,4)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
@@ -278,15 +272,9 @@ def button1fun():
     label59 = tk.Label(frame5, text=str(round(clmax,2)), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
     label59.grid(row=59, column=1, sticky="w")
 
-    
-    # label111 = tk.Label(frame1, text= 'label111-entry1 is: ' + str( entry1.get() ))
-    # label111.pack()
-    # label222 = tk.Label(frame1, text= 'label222-entry2 is: ' + str(entry2.get()))
-    # label222.pack()
-    # label333 = tk.Label(frame1, text= 'label333-entry3 is: ' + str(entry3.get()))
-    # label333.pack()
-    # label444 = tk.Label(frame1, text= 'label444-entry4 is: ' + str(entry4.get()))
-    # label444.pack()
+    # Cost
+    label4418 = tk.Label(frame441, text=str( round(QDF,ndigits=2) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
+    label4418.grid(row=2, column=1, sticky="w")
     
     # Atmosphere    
     label14rho = tk.Label(frame7, text=str( round(rho,ndigits=4) ), anchor="e", width=elw-1, borderwidth=1, relief="sunken")
@@ -325,6 +313,7 @@ def saveload(whattodo):
         entry52.delete(0,99),   entry51.delete(0,99)
         ws_range_from.delete(0,99)
         ws_range_to.delete(0,99)
+        entry4412.delete(0,99), entry4415.delete(0,99)
         frame2.destroy()
         print('Aircraft erased')
     
@@ -386,11 +375,15 @@ def saveload(whattodo):
         r1.set(int(load_list[23]))
         r2.set(int(load_list[24]))
         r3.set(int(load_list[25]))
+        entry4412.delete(0,99)
+        entry4412.insert(tk.END, load_list[26])
+        entry4415.delete(0,99)
+        entry4415.insert(tk.END, str(int(load_list[27])))
         altitudeunits(r2.get())
         velocityunits(r3.get())
         print('Aircraft loaded')
 #%% 04 GUI
-#------------------ Define root ------------------#
+#------------------ 04.01 Define root ------------------#
 root = tk.Tk()
 root.title("root")
 rootWidth = 1400
@@ -398,7 +391,7 @@ rootHeight = 800
 root.geometry(str(rootWidth) + 'x' + str(rootHeight))
 elw = 8 # Entry Label Width
 
-#------------------ Menu bar ------------------#
+#------------------ 04.02 Menu bar ------------------#
 menubar1 = tk.Menu(root)
 file_menu = tk.Menu(menubar1, tearoff=0)
 menubar1.add_cascade(label='File', menu=file_menu)
@@ -414,26 +407,289 @@ menubar1.add_cascade(label='About', menu=help_menu)
 help_menu.add_command(label='About...', command=menu_functions.option_about)
 root.config(menu=menubar1)
 
-#------------------ Tabs ------------------#
+#------------------ 04.03 Define Tabs ------------------#
 notebook1 = ttk.Notebook(root)
 tab1 = ttk.Frame(notebook1)
-tab2 = ttk.Frame(notebook1)
-notebook1.add(tab1, text='Tab1-Sizing')
-notebook1.add(tab2, text='Tab2-empty')
+tab9 = ttk.Frame(notebook1)
+tab99 = ttk.Frame(notebook1)
+notebook1.add(tab1, text='Tab1-Cost')
+notebook1.add(tab9, text='Tab9-Sizing')
+notebook1.add(tab99, text='Tab99-Geometry')
 notebook1.pack()
 
+
+#%%
+import func_b1_cost_analysis
+N_list = list( range(0,1001,40) )
+N_list[0] = 1
+cost_list = []
+for item in N_list:
+    
+    b = func_b1_cost_analysis.dev_cost_GA(W_airframe=1100*4.448,    # imported
+                                          V_H=185,      # imported
+                                          N=item,       # labeled
+                                          f_comp=1,     # labeled
+                                          yrs=5,        # labeled
+                                          R_ENG=90,     # labeled
+                                          N_P=4,        # labeled
+                                          R_TOOL=60,    # labeled
+                                          R_MFG=50,     # labeled
+                                          N_PP=1,       # labeled
+                                          unit_sales_price=400000,  # labeled
+                                          QDF=0.5998,           # labeled
+                                          insurance=50000,      # labeled
+                                          pressurized='no',     # checkboxed
+                                          tapered='yes',        # checkboxed
+                                          flap='simple',        # comboboxed
+                                          certificate='EASA',   # comboboxed
+                                          gear='fixed',         # comboboxed
+                                          P_BHP=310,    # imported
+                                          D_P=6.5,      # labeled
+                                          engine_type='piston',     # comboboxed
+                                          prop_type='const_speed')  # comboboxed
+    N = item
+    QDF = 1
+    cost=round(((b['C_ENG'] + b['C_DEV'] + b['C_FT'] + b['C_TOOL'] + b['C_MFG'] + b['C_MAT'] + b['C_QC'])/N + QDF*( b['gear_val'] + b['C_PP'] + b['C_prop'] + b['avionics'] ) + 50000)/1000000,3)
+    cost_list.append(cost)
+# import matplotlib.pyplot as plt
+# plt.figure(1)
+# plt.plot(N_list[int((len(N_list)-1)/25):],cost_list[int((len(N_list)-1)/25):],
+#          N_list[int(1/5*(len(N_list)-1))],cost_list[int(1/5*(len(N_list)-1))],'rx',
+#          N_list[int(2/5*(len(N_list)-1))],cost_list[int(2/5*(len(N_list)-1))],'rx',
+#          N_list[int(3/5*(len(N_list)-1))],cost_list[int(3/5*(len(N_list)-1))],'rx',
+#          N_list[int(4/5*(len(N_list)-1))],cost_list[int(4/5*(len(N_list)-1))],'rx',
+#          N_list[int(5/5*(len(N_list)-1))],cost_list[int(5/5*(len(N_list)-1))],'rx',
+#          N_list[int(1/5*(len(N_list)-1))],0.81,'bx',
+#          N_list[int(2/5*(len(N_list)-1))],0.57,'bx',
+#          N_list[int(3/5*(len(N_list)-1))],0.47,'bx',
+#          N_list[int(4/5*(len(N_list)-1))],0.42,'bx',
+#          N_list[int(5/5*(len(N_list)-1))],0.38,'bx')
+
+#%%
+
+
+
+
+#------------------ 04.04 Tab1-Cost ------------------#
+#------------------ 04.04.01 Frame441 ------------------#
+frame441 = tk.LabelFrame(tab1,text='Frame441 cost QDF', width=rootWidth/4, height=rootHeight/2)
+frame441.pack(side=tk.LEFT)
+frame441.pack_propagate(1)
+#------------------ 04.04.01.01 Labels ------------------#
+label4411 = tk.Label(frame441, text='Label4411_F_EXP')
+label4411.grid(row=0, column=0, sticky="w")
+entry4412 = tk.Entry(frame441, width=elw)
+entry4412.insert(tk.END, '0.95')
+entry4412.grid(row=0, column=1)
+label4411expl = tk.Label(frame441, text='Experience effectiveness (0.01 Max exp, 0.99 Min exp)')
+label4411expl.grid(row=0, column=3, sticky="w")
+
+label4414 = tk.Label(frame441, text='Label4414_N_units')
+label4414.grid(row=1, column=0, sticky="w")
+entry4415 = tk.Entry(frame441, width=elw)
+entry4415.insert(tk.END, '1000')
+entry4415.grid(row=1, column=1)
+label4414expl = tk.Label(frame441, text='Number of units produced')
+label4414expl.grid(row=1, column=3, sticky="w")
+
+label4417 = tk.Label(frame441, text='label4417-QDF')
+label4417.grid(row=2, column=0, sticky="w")
+label4418 = tk.Label(frame441, text='', width=elw-1, borderwidth=1, relief="sunken")
+label4418.grid(row=2, column=1, sticky="w")
+label4417expl = tk.Label(frame441, text='Quantity Discount Factor')
+label4417expl.grid(row=2, column=3, sticky="w")
+
+label4419 = tk.Label(frame441, text='label4419-W_airframe')
+label4419.grid(row=3, column=0, sticky="w")
+entry4420 = tk.Entry(frame441, width=elw)
+entry4420.insert(tk.END, 'entry4420')
+entry4420.grid(row=3, column=1)
+label4421 = tk.Label(frame441, text='[N]')
+label4421.grid(row=3, column=2, sticky="w")
+label4419expl = tk.Label(frame441, text='Airframe Weight')
+label4419expl.grid(row=3, column=3, sticky="w")
+
+label4422 = tk.Label(frame441, text='label4422-yrs')
+label4422.grid(row=4, column=0, sticky="w")
+entry4423 = tk.Entry(frame441, width=elw)
+entry4423.insert(tk.END, 'entry4423')
+entry4423.grid(row=4, column=1)
+label4424 = tk.Label(frame441, text='[years]')
+label4424.grid(row=4, column=2, sticky="w")
+label4422expl = tk.Label(frame441, text='Total time to produce N units')
+label4422expl.grid(row=4, column=3, sticky="w")
+
+label4425 = tk.Label(frame441, text='label4425-f_comp')
+label4425.grid(row=5, column=0, sticky="w")
+entry4426 = tk.Entry(frame441, width=elw)
+entry4426.insert(tk.END, 'entry4426')
+entry4426.grid(row=5, column=1)
+label4425expl = tk.Label(frame441, text='Fraction of airframe made from composites (0=no composites, 1=full composite)')
+label4425expl.grid(row=5, column=3, sticky="w")
+
+label4427 = tk.Label(frame441, text='label4427-unit_sales_price')
+label4427.grid(row=6, column=0, sticky="w")
+entry4428 = tk.Entry(frame441, width=elw)
+entry4428.insert(tk.END, 'entry4428')
+entry4428.grid(row=6, column=1)
+label4429 = tk.Label(frame441, text='[US dolarres]')
+label4429.grid(row=6, column=2, sticky="w")
+label4427expl = tk.Label(frame441, text='How much would you sell your aircraft for?')
+label4427expl.grid(row=6, column=3, sticky="w")
+
+label4430 = tk.Label(frame441, text='label4430-N_P')
+label4430.grid(row=7, column=0, sticky="w")
+entry4431 = tk.Entry(frame441, width=elw)
+entry4431.insert(tk.END, 'entry4431')
+entry4431.grid(row=7, column=1)
+label4430expl = tk.Label(frame441, text='Number of prototypes')
+label4430expl.grid(row=7, column=3, sticky="w")
+
+label4432 = tk.Label(frame441, text='label4432-R_ENG')
+label4432.grid(row=8, column=0, sticky="w")
+entry4433 = tk.Entry(frame441, width=elw)
+entry4433.insert(tk.END, 'entry4433')
+entry4433.grid(row=8, column=1)
+label4434 = tk.Label(frame441, text='[US dolarres]')
+label4434.grid(row=8, column=2, sticky="w")
+label4432expl = tk.Label(frame441, text='Rate of engineering labor in $/h (e.g. $90/h)')
+label4432expl.grid(row=8, column=3, sticky="w")
+
+label4435 = tk.Label(frame441, text='label4435-R_TOOL')
+label4435.grid(row=9, column=0, sticky="w")
+entry4436 = tk.Entry(frame441, width=elw)
+entry4436.insert(tk.END, 'entry4436')
+entry4436.grid(row=9, column=1)
+label4437 = tk.Label(frame441, text='[US dolarres]')
+label4437.grid(row=9, column=2, sticky="w")
+label4435expl = tk.Label(frame441, text='Rate of tooling labor in $/h (e.g. $60/h)')
+label4435expl.grid(row=9, column=3, sticky="w")
+
+label4438 = tk.Label(frame441, text='label4438-R_MFG')
+label4438.grid(row=10, column=0, sticky="w")
+entry4439 = tk.Entry(frame441, width=elw)
+entry4439.insert(tk.END, 'entry4439')
+entry4439.grid(row=10, column=1)
+label4440 = tk.Label(frame441, text='[US dolarres]')
+label4440.grid(row=10, column=2, sticky="w")
+label4438expl = tk.Label(frame441, text='Rate of amnufacturing labor in $/h (e.g. $50/h)')
+label4438expl.grid(row=10, column=3, sticky="w")
+
+label4441 = tk.Label(frame441, text='label4441-N_PP')
+label4441.grid(row=11, column=0, sticky="w")
+entry4442 = tk.Entry(frame441, width=elw)
+entry4442.insert(tk.END, 'entry4442')
+entry4442.grid(row=11, column=1)
+label4441expl = tk.Label(frame441, text='Number of powerplants')
+label4441expl.grid(row=11, column=3, sticky="w")
+
+label4443 = tk.Label(frame441, text='label4443-insurance')
+label4443.grid(row=12, column=0, sticky="w")
+entry4444 = tk.Entry(frame441, width=elw)
+entry4444.insert(tk.END, 'entry4444')
+entry4444.grid(row=12, column=1)
+label4445 = tk.Label(frame441, text='[US dolarres]')
+label4445.grid(row=12, column=2, sticky="w")
+label4443expl = tk.Label(frame441, text='Manufacturers liability insurance')
+label4443expl.grid(row=12, column=3, sticky="w")
+
+label4446 = tk.Label(frame441, text='label4446-certificate')
+label4446.grid(row=13, column=0, sticky="w")
+options_certificate = ['EASA', 'FAA']
+cbox_certificate = tk.ttk.Combobox(frame441,values=options_certificate,width=elw)
+cbox_certificate.set('EASA')
+cbox_certificate.grid(row=13, column=1)
+
+label4447 = tk.Label(frame441, text='label4447-flap')
+label4447.grid(row=14, column=0, sticky="w")
+options_flap = ['simple', 'complex']
+cbox_flap = tk.ttk.Combobox(frame441,values=options_flap,width=elw)
+cbox_flap.set('simple')
+cbox_flap.grid(row=14, column=1)
+
+label4448 = tk.Label(frame441, text='label4448-gear')
+label4448.grid(row=15, column=0, sticky="w")
+options_gear = ['fixed', 'retractable']
+cbox_gear = tk.ttk.Combobox(frame441,values=options_gear,width=elw)
+cbox_gear.set('fixed')
+cbox_gear.grid(row=15, column=1)
+
+label4449 = tk.Label(frame441, text='label4449-pressurized')
+label4449.grid(row=16, column=0, sticky="w")
+chkbtn_pressurized = tk.Checkbutton(frame441, onvalue='yes', offvalue='no')
+chkbtn_pressurized.deselect()
+chkbtn_pressurized.grid(row=16, column=1)
+label4449expl = tk.Label(frame441, text='Used for cost estimation purpose only')
+label4449expl.grid(row=16, column=3, sticky="w")
+
+label4450 = tk.Label(frame441, text='label4450-tapered')
+label4450.grid(row=17, column=0, sticky="w")
+chkbtn_tapered = tk.Checkbutton(frame441, onvalue='yes', offvalue='no')
+chkbtn_tapered.deselect()
+chkbtn_tapered.grid(row=17, column=1)
+label4450expl = tk.Label(frame441, text='Used for cost estimation purpose only')
+label4450expl.grid(row=17, column=3, sticky="w")
+
+label4451 = tk.Label(frame441, text='label4451-D_P')
+label4451.grid(row=18, column=0, sticky="w")
+entry4452 = tk.Entry(frame441, width=elw)
+entry4452.insert(tk.END, 'entry4452')
+entry4452.grid(row=18, column=1)
+label4453 = tk.Label(frame441, text='[ft]')
+label4453.grid(row=18, column=2, sticky="w")
+label4451expl = tk.Label(frame441, text='Propeller diameter')
+label4451expl.grid(row=18, column=3, sticky="w")
+
+label4454 = tk.Label(frame441, text='label4454-engine_type')
+label4454.grid(row=19, column=0, sticky="w")
+options_engine_type = ['piston', 'turboprop', 'turbojet', 'turbofan', 'no_engine']
+cbox_engine_type = tk.ttk.Combobox(frame441,values=options_engine_type,width=elw)
+cbox_engine_type.set('piston')
+cbox_engine_type.grid(row=19, column=1)
+
+label4455 = tk.Label(frame441, text='label4455-prop_type')
+label4455.grid(row=20, column=0, sticky="w")
+options_engine_type = ['fixed_pitch', 'const_speed', 'no_prop']
+cbox_engine_type = tk.ttk.Combobox(frame441,values=options_engine_type,width=elw)
+cbox_engine_type.set('const_speed')
+cbox_engine_type.grid(row=20, column=1)
+
+label4456 = tk.Label(frame441, text='label4456-n_wwpy')
+label4456.grid(row=21, column=0, sticky="w")
+entry4457 = tk.Entry(frame441, width=elw)
+entry4457.insert(tk.END, 'entry4457')
+entry4457.grid(row=21, column=1)
+label4458 = tk.Label(frame441, text='[wk/y]')
+label4458.grid(row=21, column=2, sticky="w")
+label4456expl = tk.Label(frame441, text='Number of work weeks per year')
+label4456expl.grid(row=21, column=3, sticky="w")
+
+label4459 = tk.Label(frame441, text='label4459-n_whpw')
+label4459.grid(row=22, column=0, sticky="w")
+entry4460 = tk.Entry(frame441, width=elw)
+entry4460.insert(tk.END, 'entry4460')
+entry4460.grid(row=22, column=1)
+label4461 = tk.Label(frame441, text='[h/wk]')
+label4461.grid(row=22, column=2, sticky="w")
+label4459expl = tk.Label(frame441, text='Number of work hours per week')
+label4459expl.grid(row=22, column=3, sticky="w")
+
+#------------------ 04.04.02 Frame442 ------------------#
+frame442 = tk.LabelFrame(tab1,text='Frame442-cost plots', width=rootWidth/4, height=rootHeight/2)
+frame442.pack(side=tk.RIGHT)
+frame442.pack_propagate(1)
 
 #------------------ Frames ------------------#
 frame1Width = rootWidth/2
 frame1Height = rootHeight/1
-frame1 = tk.LabelFrame(tab1, text='Flight Parameters', width=frame1Width, height=frame1Height)
+frame1 = tk.LabelFrame(tab9, text='Flight Parameters', width=frame1Width, height=frame1Height)
 frame1.pack(side=tk.LEFT)
 frame1.pack_propagate(0)
 
 
 frame2Width = rootWidth/2
 frame2Height = rootHeight/1
-frame2 = tk.LabelFrame(tab1,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
+frame2 = tk.LabelFrame(tab9,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
 frame2.pack()
 frame2.pack(side=tk.LEFT)
 frame2.pack_propagate(0)
@@ -934,7 +1190,7 @@ def showplotf():
     if 'fig1' in globals():
     #     print('fig1 exists in GLOBALS')
         frame2.destroy() # does not destroy wtf
-        frame2 = tk.LabelFrame(tab1,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
+        frame2 = tk.LabelFrame(tab9,text='frame2', relief=tk.RIDGE, borderwidth=5, width=frame2Width, height=frame2Height)
         frame2.pack(side=tk.LEFT)
         frame2.pack_propagate(0)
         del fig1
