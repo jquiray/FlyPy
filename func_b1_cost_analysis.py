@@ -35,20 +35,21 @@ def quantity_discount_factor(F_EXP=0.95,N=1000):
     QDF = F_EXP**(1.4427*np.log(N)) # equation (2-1)
     return QDF
 
-def dev_cost_GA(
-        W_airframe, V_H, N, f_comp,
-        yrs,
-        R_ENG,
-        N_P,
-        R_TOOL,
-        R_MFG,
-        N_PP,
-        unit_sales_price, QDF, insurance=50000,
-        tapered='yes',
-        pressurized='yes', certificate='EASA', flap='simple', gear='retractable',
-        engine_type='turbofan',P_BHP=0,P_SHP=0,T=0,
-        prop_type='no_prop',D_P=0,
-        n_wwpy=48,n_whpw=40):
+def dev_cost_GA(cost_input_dict):
+        # W_airframe, V_H, N, f_comp,
+        # yrs,
+        # R_ENG,
+        # N_P,
+        # R_TOOL,
+        # R_MFG,
+        # N_PP,
+        # CPIyear,
+        # unit_sales_price, QDF, insurance=50000,
+        # tapered='yes',
+        # pressurized='yes', certificate='EASA', flap='simple', gear='retractable',
+        # engine_type='turbofan',P_BHP=0,P_SHP=0,T=0,
+        # prop_type='no_prop',D_P=0,
+        # n_wwpy=48,n_whpw=40
     """
     Snorri 2.2.2 Development Cost of a GA Aircraft - the Eastlake Model
     (pg 37-43)
@@ -73,6 +74,33 @@ def dev_cost_GA(
     None.
 
     """
+    F_EXP       = cost_input_dict['F_EXP']
+    N           = cost_input_dict['N_units']
+    W_airframe  = cost_input_dict['W_airframe']
+    yrs         = cost_input_dict['yrs']
+    f_comp      = cost_input_dict['f_comp']
+    unit_sales_price    = cost_input_dict['unit_sales_price']
+    N_P         = cost_input_dict['N_P']
+    R_ENG       = cost_input_dict['R_ENG']
+    R_TOOL      = cost_input_dict['R_TOOL']
+    R_MFG       = cost_input_dict['R_MFG']
+    N_PP        = cost_input_dict['N_PP']
+    insurance   = cost_input_dict['insurance']
+    D_P         = cost_input_dict['D_P']
+    n_wwpy      = cost_input_dict['n_wwpy']
+    n_whpw      = cost_input_dict['n_whpw']
+    CPIyear     = cost_input_dict['CPIyear']
+    certificate = cost_input_dict['certificate']
+    flap        = cost_input_dict['flap']
+    gear        = cost_input_dict['gear']
+    pressurized = cost_input_dict['pressurized']
+    tapered     = cost_input_dict['tapered']
+    engine_type = cost_input_dict['engine_type']
+    prop_type   = cost_input_dict['prop_type']
+    PP_val      = cost_input_dict['PP_val']
+    V_H         = cost_input_dict['V_H'] / 0.5144
+    QDF         = cost_input_dict['QDF']
+    
     print(N)
     return_dict = dict()
     W_airframe = W_airframe / 4.448 # because these estimates take lbf
@@ -129,7 +157,7 @@ def dev_cost_GA(
     return_dict['H_TOOL'] = round(H_TOOL)
     """
     Q_m         - estimated production rate in aircraft per month (=N/60 for 60 months i.e. 5 years)
-    F_TAPER     - =0.95 for no taper, =1 for tapered wing # !!!
+    F_TAPER     - =0.95 for no taper, =1 for tapered wing
     F_CF2       - =1.02 if complex flap, =1 if simple flap
     F_PRESS2    - =1 if unpressurized, =1.01 if pressurized
     """
@@ -156,7 +184,7 @@ def dev_cost_GA(
     
     
     #%% Total Cost of Engineering
-    CPI2021 = 2.0969 #2.496049 # Jan 1986 --> Aug 2021
+    CPI2021 = CPIyear # 2.0969 #2.496049 # Jan 1986 --> Aug 2021
     CPI = CPI2021
     C_ENG = CPI * H_ENG * R_ENG # equation (2-5)
     return_dict['C_ENG'] = round(C_ENG)
@@ -257,13 +285,13 @@ def dev_cost_GA(
     # the cost depends on the rated brake-horsepower (P_BHP) or shaft-horsepower
     # (P_SHP). For turbojets and turbofans it is based on the rated thrust (T).
     if engine_type == 'piston':
-        C_PP = 174.0 * N_PP * P_BHP * (CPI2021/CPI2012) # equation (2-13)
+        C_PP = 174.0 * N_PP * PP_val * (CPI2021/CPI2012) # equation (2-13)
     elif engine_type == 'turboprop':
-        C_PP = 377.4 * N_PP * P_SHP * (CPI2021/CPI2012) # equation (2-14)
+        C_PP = 377.4 * N_PP * PP_val * (CPI2021/CPI2012) # equation (2-14)
     elif engine_type == 'turbojet':
-        C_PP = 868.1 * N_PP * T**0.8356 * (CPI2021/CPI2012) # equation (2-15)
+        C_PP = 868.1 * N_PP * PP_val**0.8356 * (CPI2021/CPI2012) # equation (2-15)
     elif engine_type == 'turbofan':
-        C_PP = 1035.9 * N_PP * T**0.8356 * (CPI2021/CPI2012) # equation (2-16)
+        C_PP = 1035.9 * N_PP * PP_val**0.8356 * (CPI2021/CPI2012) # equation (2-16)
     elif engine_type == 'no_engine':
         C_PP = 0
     return_dict['C_PP'] = round(C_PP)
@@ -278,7 +306,7 @@ def dev_cost_GA(
         C_prop = 3145 * N_PP * (CPI2021/CPI2012) # equation (2-17)
     elif prop_type == 'const_speed':
         if engine_type == 'piston':
-            P_SHP = P_BHP
+            P_SHP = PP_val
         C_prop = 209.69 * N_PP * (CPI2021/CPI2012) * D_P**2 * (P_SHP/D_P)**0.12 # equation (2-18)
     elif prop_type == 'no_prop':
         C_prop = 0
