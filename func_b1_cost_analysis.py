@@ -305,8 +305,7 @@ def dev_cost_GA(cost_input_dict):
     if prop_type == 'fixed_pitch':
         C_prop = 3145 * N_PP * (CPI2021/CPI2012) # equation (2-17)
     elif prop_type == 'const_speed':
-        if engine_type == 'piston':
-            P_SHP = PP_val
+        P_SHP = PP_val
         C_prop = 209.69 * N_PP * (CPI2021/CPI2012) * D_P**2 * (P_SHP/D_P)**0.12 # equation (2-18)
     elif prop_type == 'no_prop':
         C_prop = 0
@@ -332,6 +331,14 @@ def dev_cost_GA(cost_input_dict):
     # Using the standard cost-volume-profit-analysis equation (2-19) is used.
     total_fixed_cost = C_CERT
     unit_variable_cost = (C_MFG + C_QC + C_MAT)/N + (gear_val+C_PP+C_prop+avionics)*QDF + insurance
+    return_dict['unit_variable_cost'] = round(unit_variable_cost)
+    min_usp = round(unit_variable_cost*1.2)
+    print(min_usp)
+    a = len(str(min_usp))
+    sfg = 2 # significant figures (generally 3)
+    
+    return_dict['min_unit_sales_price'] = round(min_usp*10**(-(a-sfg)))*10**(a-sfg)
+    # return_dict['min_unit_sales_price'] = round(unit_variable_cost*1.2)
     N_BE = ( total_fixed_cost )/( unit_sales_price - unit_variable_cost ) # equation (2-19)
     return_dict['N_BE'] = round(N_BE)
     """
