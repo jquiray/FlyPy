@@ -15,7 +15,7 @@ from func_b2_constraint_analysis import tw_desired_cruise_airspeed
 from func_b2_constraint_analysis import tw_service_ceiling
 from func_b2_constraint_analysis import clmax_ws_func
 # 
-def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop):
+def mainparameters(sizing_input_dict):
     """
     Main parameters function
 
@@ -39,6 +39,28 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
     All other necessary stuff.
 
     """
+    ws_params = sizing_input_dict['ws_params']
+    alt       = sizing_input_dict['alt']
+    V         = sizing_input_dict['V']
+    mtow      = sizing_input_dict['mtow']
+    ar        = sizing_input_dict['ar']
+    C_Dmin    = sizing_input_dict['C_Dmin']
+    n         = sizing_input_dict['n']
+    P_S       = sizing_input_dict['P_S']
+    V_v       = sizing_input_dict['V_v']
+    C_DTO     = sizing_input_dict['C_DTO']
+    C_LTO     = sizing_input_dict['C_LTO']
+    S_G       = sizing_input_dict['S_G']
+    mu_gr     = sizing_input_dict['mu_gr']
+    V_LOF     = sizing_input_dict['V_LOF']
+    V_vx      = sizing_input_dict['V_vx']
+    alt_sc    = sizing_input_dict['alt_sc']
+    alt_TO    = sizing_input_dict['alt_TO']
+    V_stall   = sizing_input_dict['V_stall']
+    eta_prop  = sizing_input_dict['eta_prop']
+    
+    #---------------------------------------------------------#
+    
     # Atmosphere
     T,p,rho,mu,a = ISAfunny(alt)
     
@@ -198,11 +220,78 @@ def mainparameters(ws_params,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_g
         psl_sc_mass_list.append(psl_sc_mass)
     #--------------------------------------------------
     #--------------------------------------------------
+    #--------------- Packing results ---------------#
     
+    sizing_output_dict = dict()
+    sizing_output_dict['T'] = T
+    sizing_output_dict['p'] = p
+    sizing_output_dict['rho'] = rho
+    sizing_output_dict['mu'] = mu
+    sizing_output_dict['a'] = a
+    sizing_output_dict['V'] = V
+    sizing_output_dict['q'] = q
+    sizing_output_dict['e'] = e
+    sizing_output_dict['k'] = k
+    sizing_output_dict['ws'] = ws
+    sizing_output_dict['tw_clvt_list'] = tw_clvt_list
+    sizing_output_dict['tw_dsel_list'] = tw_dsel_list
+    sizing_output_dict['tw_dtod_list'] = tw_dtod_list
+    sizing_output_dict['tw_dca_list'] = tw_dca_list
+    sizing_output_dict['tw_sc_list'] = tw_sc_list
+    sizing_output_dict['pw_clvt_list'] = pw_clvt_list
+    sizing_output_dict['pwsl_clvt_list'] = pwsl_clvt_list
+    sizing_output_dict['t_clvt_mass_list'] = t_clvt_mass_list
+    sizing_output_dict['p_clvt_mass_list'] = p_clvt_mass_list
+    sizing_output_dict['psl_clvt_mass_list'] = psl_clvt_mass_list
+    sizing_output_dict['pw_dsel_list'] = pw_dsel_list
+    sizing_output_dict['pwsl_dsel_list'] = pwsl_dsel_list
+    sizing_output_dict['t_dsel_mass_list'] = t_dsel_mass_list
+    sizing_output_dict['p_dsel_mass_list'] = p_dsel_mass_list
+    sizing_output_dict['psl_dsel_mass_list'] = psl_dsel_mass_list
+    sizing_output_dict['pw_dtod_list'] = pw_dtod_list
+    sizing_output_dict['pwsl_dtod_list'] = pwsl_dtod_list
+    sizing_output_dict['t_dtod_mass_list'] = t_dtod_mass_list
+    sizing_output_dict['p_dtod_mass_list'] = p_dtod_mass_list
+    sizing_output_dict['psl_dtod_mass_list'] = psl_dtod_mass_list
+    sizing_output_dict['pw_dca_list'] = pw_dca_list
+    sizing_output_dict['pwsl_dca_list'] = pwsl_dca_list
+    sizing_output_dict['t_dca_mass_list'] = t_dca_mass_list
+    sizing_output_dict['p_dca_mass_list'] = p_dca_mass_list
+    sizing_output_dict['psl_dca_mass_list'] = psl_dca_mass_list
+    sizing_output_dict['pw_sc_list'] = pw_sc_list
+    sizing_output_dict['pwsl_sc_list'] = pwsl_sc_list
+    sizing_output_dict['t_sc_mass_list'] = t_sc_mass_list
+    sizing_output_dict['p_sc_mass_list'] = p_sc_mass_list
+    sizing_output_dict['psl_sc_mass_list'] = psl_sc_mass_list
+    sizing_output_dict['S_list'] = S_list
+    sizing_output_dict['clmax_list'] = clmax_list
     
-    return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list
+    return sizing_output_dict
+    # return T,p,rho,mu,a,V,q,e,k,ws,tw_clvt_list,tw_dsel_list,tw_dtod_list,tw_dca_list,tw_sc_list,pw_clvt_list,pwsl_clvt_list,t_clvt_mass_list,p_clvt_mass_list,psl_clvt_mass_list,pw_dsel_list,pwsl_dsel_list,t_dsel_mass_list,p_dsel_mass_list,psl_dsel_mass_list,pw_dtod_list,pwsl_dtod_list,t_dtod_mass_list,p_dtod_mass_list,psl_dtod_mass_list,pw_dca_list,pwsl_dca_list,t_dca_mass_list,p_dca_mass_list,psl_dca_mass_list,pw_sc_list,pwsl_sc_list,t_sc_mass_list,p_sc_mass_list,psl_sc_mass_list,S_list,clmax_list
 
-def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr,V_LOF,V_vx,alt_sc,alt_TO,V_stall,eta_prop):
+def designpoint(sizing_input_dict):
+    DP_ws     = sizing_input_dict['DP_ws']
+    DP_tw     = sizing_input_dict['DP_tw']
+    ws_params = sizing_input_dict['ws_params']
+    alt       = sizing_input_dict['alt']
+    V         = sizing_input_dict['V']
+    mtow      = sizing_input_dict['mtow']
+    ar        = sizing_input_dict['ar']
+    C_Dmin    = sizing_input_dict['C_Dmin']
+    n         = sizing_input_dict['n']
+    P_S       = sizing_input_dict['P_S']
+    V_v       = sizing_input_dict['V_v']
+    C_DTO     = sizing_input_dict['C_DTO']
+    C_LTO     = sizing_input_dict['C_LTO']
+    S_G       = sizing_input_dict['S_G']
+    mu_gr     = sizing_input_dict['mu_gr']
+    V_LOF     = sizing_input_dict['V_LOF']
+    V_vx      = sizing_input_dict['V_vx']
+    alt_sc    = sizing_input_dict['alt_sc']
+    alt_TO    = sizing_input_dict['alt_TO']
+    V_stall   = sizing_input_dict['V_stall']
+    eta_prop  = sizing_input_dict['eta_prop']
+    
     """
     
 
@@ -299,4 +388,19 @@ def designpoint(DP_ws,DP_tw,alt,V,mtow,ar,C_Dmin,n,P_S,V_v,C_DTO,C_LTO,S_G,mu_gr
     
     clmax = clmax_ws_func(DP_ws, rho_TO, V_stall)
     
-    return tw_clvt,tw_dsel,tw_dtod,tw_dca,tw_sc,DP_pw,DP_pwsl,Thr,P_kw,P_hp,P_hpSL,DP_S,clmax
+    designpoint_output_dict = dict()
+    designpoint_output_dict['tw_clvt']  = tw_clvt
+    designpoint_output_dict['tw_dsel']  = tw_dsel
+    designpoint_output_dict['tw_dtod']  = tw_dtod
+    designpoint_output_dict['tw_dca']   = tw_dca
+    designpoint_output_dict['tw_sc']    = tw_sc
+    designpoint_output_dict['DP_pw']    = DP_pw
+    designpoint_output_dict['DP_pwsl']  = DP_pwsl
+    designpoint_output_dict['Thr']      = Thr
+    designpoint_output_dict['P_kw']     = P_kw
+    designpoint_output_dict['P_hp']     = P_hp
+    designpoint_output_dict['P_hpSL']   = P_hpSL
+    designpoint_output_dict['DP_S']     = DP_S
+    designpoint_output_dict['clmax']    = clmax
+    
+    return designpoint_output_dict

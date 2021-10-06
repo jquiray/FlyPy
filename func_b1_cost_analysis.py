@@ -74,19 +74,19 @@ def dev_cost_GA(cost_input_dict):
     None.
 
     """
-    F_EXP       = cost_input_dict['F_EXP']
     N           = cost_input_dict['N_units']
     W_airframe  = cost_input_dict['W_airframe']
     yrs         = cost_input_dict['yrs']
     f_comp      = cost_input_dict['f_comp']
-    unit_sales_price    = cost_input_dict['unit_sales_price']
+    usdeur      = cost_input_dict['usdeur']
+    unit_sales_price    = cost_input_dict['unit_sales_price'] * usdeur
     N_P         = cost_input_dict['N_P']
-    R_ENG       = cost_input_dict['R_ENG']
-    R_TOOL      = cost_input_dict['R_TOOL']
-    R_MFG       = cost_input_dict['R_MFG']
+    R_ENG       = cost_input_dict['R_ENG'] * usdeur
+    R_TOOL      = cost_input_dict['R_TOOL'] * usdeur
+    R_MFG       = cost_input_dict['R_MFG'] * usdeur
     N_PP        = cost_input_dict['N_PP']
-    insurance   = cost_input_dict['insurance']
-    D_P         = cost_input_dict['D_P']
+    insurance   = cost_input_dict['insurance'] * usdeur
+    D_P         = cost_input_dict['D_P'] / 0.3048
     n_wwpy      = cost_input_dict['n_wwpy']
     n_whpw      = cost_input_dict['n_whpw']
     CPIyear     = cost_input_dict['CPIyear']
@@ -101,7 +101,6 @@ def dev_cost_GA(cost_input_dict):
     V_H         = cost_input_dict['V_H'] / 0.5144
     QDF         = cost_input_dict['QDF']
     
-    print(N)
     return_dict = dict()
     W_airframe = W_airframe / 4.448 # because these estimates take lbf
     #%% Number of Engineering Man-Hours
@@ -187,7 +186,7 @@ def dev_cost_GA(cost_input_dict):
     CPI2021 = CPIyear # 2.0969 #2.496049 # Jan 1986 --> Aug 2021
     CPI = CPI2021
     C_ENG = CPI * H_ENG * R_ENG # equation (2-5)
-    return_dict['C_ENG'] = round(C_ENG)
+    return_dict['C_ENG'] = round(C_ENG/usdeur)
     """
     R_ENG       - rate of engineering labor in $/h (e.g. $92/h)
     CPI         - Consumer Price Index for 2021 relative to 1986
@@ -203,7 +202,7 @@ def dev_cost_GA(cost_input_dict):
         F_CERT3 = 0.5
     F_COMP3 = 1 + 0.5*f_comp
     C_DEV = 0.06458 * W_airframe**0.873 * V_H**1.89 * N_P**0.346 * (CPI2021/CPI2012) * F_CERT3 * F_CF3 * F_COMP3 * F_PRESS1
-    return_dict['C_DEV'] = round(C_DEV)
+    return_dict['C_DEV'] = round(C_DEV/usdeur)
     """
     N_P         - number of prototypes
     F_CERT3     - =0.5 if certified as LSA, =1 if certified as a 14 CFR Part 23
@@ -218,7 +217,7 @@ def dev_cost_GA(cost_input_dict):
     elif certificate == 'FAA':
         F_CERT4 = 10.0
     C_FT = 0.009646 * W_airframe**1.16 * V_H**1.3718 * N_P**1.281 * (CPI2021/CPI2012) * F_CERT4 # equation (2-7)
-    return_dict['C_FT'] = round(C_FT)
+    return_dict['C_FT'] = round(C_FT/usdeur)
     """
     F_CERT4     - =10 if certified as LSA, =1 if certified as a 14 CFR Part 23
     """
@@ -228,7 +227,7 @@ def dev_cost_GA(cost_input_dict):
     # Tooling requires industrial and manufacturing engineers for the design
     # work and technicians to fabricate and maintain
     C_TOOL = CPI * H_TOOL * R_TOOL # equation (2-8)
-    return_dict['C_TOOL'] = round(C_TOOL)
+    return_dict['C_TOOL'] = round(C_TOOL/usdeur)
     """
     R_TOOL      - rate of tooling labor in $/h (e.g. $61/h)
     """
@@ -236,7 +235,7 @@ def dev_cost_GA(cost_input_dict):
     #%% Total Cost of Manufacturing
     # Cost of manufacturing labor required to produce the aircraft
     C_MFG = CPI * H_MFG * R_MFG # equation (2-9)
-    return_dict['C_MFG'] = round(C_MFG)
+    return_dict['C_MFG'] = round(C_MFG/usdeur)
     """
     R_MFG       - rate of manufacturing labor in $/h (e.g. $53/h)
     """
@@ -245,30 +244,28 @@ def dev_cost_GA(cost_input_dict):
     # Cost of technicians and the equipment required to demonstrate that the
     # product being manufactured is inded the airplane shown in the drawing package
     C_QC = 0.13 * C_MFG * F_CERT3 * F_COMP3
-    return_dict['C_QC'] = round(C_QC)
+    return_dict['C_QC'] = round(C_QC/usdeur)
     
     #%% Total Cost of Materials
     # Cost of raw material (aluminium sheets, pre-impregnated composites,
     # landing gear, avionics, etc.) required to fabricate the airplane
     C_MAT = 24.896 * W_airframe**0.689 * V_H**0.624 * N**0.792 * (CPI2021/CPI2012) * F_CERT2 * F_CF2 * F_PRESS2
-    return_dict['C_MAT'] = round(C_MAT)
+    return_dict['C_MAT'] = round(C_MAT/usdeur)
     
     #%% Total Cost to Certify
     # Sum of costs of Engineering, Development Support, Flight Test, and Tooling
     C_CERT = C_ENG + C_DEV + C_FT + C_TOOL
-    return_dict['C_CERT'] = round(C_CERT)
+    return_dict['C_CERT'] = round(C_CERT/usdeur)
     
     #%% Cost of Retractable Landing Gear per Airplane
     # Already included in the DAPCA-IV (this) formulation, so an adjustment
     # is made only if the airplane has fixed landing gear. If so, subtract
     # $7500 per airplane
     if gear == 'retractable':
-        print('landing gear is retractable')
         gear_val = 0
     elif gear == 'fixed':
-        print('subtract $7500 from each airplane')
         gear_val = -7500
-    return_dict['gear_val'] = gear_val
+    return_dict['gear_val'] = round(gear_val/usdeur)
     
     #%% Cost of Avionics
     # In the absence of more accurate information, in 2012 US dollars (that's why CPI ratio),
@@ -278,7 +275,7 @@ def dev_cost_GA(cost_input_dict):
         avionics = 15000 * (CPI2021/CPI2012)
     elif certificate == 'FAA':
         avionics = 4500 * (CPI2021/CPI2012)
-    return_dict['avionics'] = avionics
+    return_dict['avionics'] = round(avionics/usdeur)
     #%% Cost of Power Plant (engines, propellers)
     # The cost of the engine depends on the number of (N_PP) and type of engine
     # (piston, turboprop, turbojet, or turbofan). For piston and turboprop engines
@@ -294,7 +291,7 @@ def dev_cost_GA(cost_input_dict):
         C_PP = 1035.9 * N_PP * PP_val**0.8356 * (CPI2021/CPI2012) # equation (2-16)
     elif engine_type == 'no_engine':
         C_PP = 0
-    return_dict['C_PP'] = round(C_PP)
+    return_dict['C_PP'] = round(C_PP/usdeur)
     
     # Since piston and turboprop engines also require propellers, this cost must
     # be determined as well. The two most common types are the fixed-pitch and
@@ -302,14 +299,17 @@ def dev_cost_GA(cost_input_dict):
     # around $3145 in 2012. However constant-speed propellers are more expensive
     # and an expression that takes into account the diameter of the propeller
     # (D_P [ft]) and P_SHP has been derived.
-    if prop_type == 'fixed_pitch':
-        C_prop = 3145 * N_PP * (CPI2021/CPI2012) # equation (2-17)
-    elif prop_type == 'const_speed':
-        P_SHP = PP_val
-        C_prop = 209.69 * N_PP * (CPI2021/CPI2012) * D_P**2 * (P_SHP/D_P)**0.12 # equation (2-18)
-    elif prop_type == 'no_prop':
+    if engine_type == 'piston' or engine_type == 'turboprop':
+        if prop_type == 'fixed_pitch':
+            C_prop = 3145 * N_PP * (CPI2021/CPI2012) # equation (2-17)
+        elif prop_type == 'const_speed':
+            P_SHP = PP_val
+            C_prop = 209.69 * N_PP * (CPI2021/CPI2012) * D_P**2 * (P_SHP/D_P)**0.12 # equation (2-18)
+        elif prop_type == 'no_prop':
+            C_prop = 0
+    else:
         C_prop = 0
-    return_dict['C_prop'] = round(C_prop)
+    return_dict['C_prop'] = round(C_prop/usdeur)
     
     #%% Number of engineers
     # Number of engineers needed to develop the aircraft over a period of eng_yrs years
@@ -331,9 +331,8 @@ def dev_cost_GA(cost_input_dict):
     # Using the standard cost-volume-profit-analysis equation (2-19) is used.
     total_fixed_cost = C_CERT
     unit_variable_cost = (C_MFG + C_QC + C_MAT)/N + (gear_val+C_PP+C_prop+avionics)*QDF + insurance
-    return_dict['unit_variable_cost'] = round(unit_variable_cost)
+    return_dict['unit_variable_cost'] = round(unit_variable_cost/usdeur)
     min_usp = round(unit_variable_cost*1.2)
-    print(min_usp)
     a = len(str(min_usp))
     sfg = 2 # significant figures (generally 3)
     
