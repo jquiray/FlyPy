@@ -281,15 +281,15 @@ def dev_cost_GA(cost_input_dict):
     # (piston, turboprop, turbojet, or turbofan). For piston and turboprop engines
     # the cost depends on the rated brake-horsepower (P_BHP) or shaft-horsepower
     # (P_SHP). For turbojets and turbofans it is based on the rated thrust (T).
-    if engine_type == 'piston':
+    if engine_type == 'Piston':
         C_PP = 174.0 * N_PP * PP_val * (CPI2021/CPI2012) # equation (2-13)
-    elif engine_type == 'turboprop':
+    elif engine_type == 'Turboprop':
         C_PP = 377.4 * N_PP * PP_val * (CPI2021/CPI2012) # equation (2-14)
-    elif engine_type == 'turbojet':
+    elif engine_type == 'Turbojet':
         C_PP = 868.1 * N_PP * PP_val**0.8356 * (CPI2021/CPI2012) # equation (2-15)
-    elif engine_type == 'turbofan':
+    elif engine_type == 'Turbofan':
         C_PP = 1035.9 * N_PP * PP_val**0.8356 * (CPI2021/CPI2012) # equation (2-16)
-    elif engine_type == 'no_engine':
+    elif engine_type == 'No engine':
         C_PP = 0
     return_dict['C_PP'] = round(C_PP/usdeur)
     
@@ -299,13 +299,13 @@ def dev_cost_GA(cost_input_dict):
     # around $3145 in 2012. However constant-speed propellers are more expensive
     # and an expression that takes into account the diameter of the propeller
     # (D_P [ft]) and P_SHP has been derived.
-    if engine_type == 'piston' or engine_type == 'turboprop':
-        if prop_type == 'fixed_pitch':
+    if engine_type == 'Piston' or engine_type == 'Turboprop':
+        if prop_type == 'Fixed pitch':
             C_prop = 3145 * N_PP * (CPI2021/CPI2012) # equation (2-17)
-        elif prop_type == 'const_speed':
+        elif prop_type == 'Constant speed':
             P_SHP = PP_val
             C_prop = 209.69 * N_PP * (CPI2021/CPI2012) * D_P**2 * (P_SHP/D_P)**0.12 # equation (2-18)
-        elif prop_type == 'no_prop':
+        elif prop_type == 'No propeller':
             C_prop = 0
     else:
         C_prop = 0
